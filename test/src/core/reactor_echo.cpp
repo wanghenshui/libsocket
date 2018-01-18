@@ -4,16 +4,16 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/inet/inet_address.hpp"
-#include "socket/base/basic_socket.hpp"
-#include "socket/core/reactor.hpp"
+#include "xio/inet/inet_address.hpp"
+#include "xio/base/basic_socket.hpp"
+#include "xio/core/reactor.hpp"
 #include "chen/mt/threadpool.hpp"
 #include "gtest/gtest.h"
 
-using chen::reactor;
-using chen::ev_base;
-using chen::inet_address;
-using chen::basic_socket;
+using xio::reactor;
+using xio::ev_base;
+using xio::inet_address;
+using xio::basic_socket;
 
 void server_thread(basic_socket &s);
 void client_thread(inet_address a);
@@ -54,7 +54,7 @@ void server_thread(basic_socket &s)
             return;  // connection closed
 
         std::string text(size, '\0');
-        EXPECT_EQ((chen::ssize_t)size, conn->recv(&text[0], size));
+        EXPECT_EQ((xio::ssize_t)size, conn->recv(&text[0], size));
 
         // need stop the reactor?
         if (text == "stop")
@@ -62,7 +62,7 @@ void server_thread(basic_socket &s)
 
         // revert and send back
         std::reverse(text.begin(), text.end());
-        EXPECT_EQ((chen::ssize_t)size, conn->send(text.data(), size));
+        EXPECT_EQ((xio::ssize_t)size, conn->send(text.data(), size));
     };
 
     auto handler_server = [&](int type) {
@@ -112,12 +112,12 @@ void client_thread(inet_address a)
             basic_socket c(AF_INET, SOCK_STREAM);
 
             EXPECT_TRUE(!c.connect(a));
-            EXPECT_EQ((chen::ssize_t)text.size(), c.send(text.data(), text.size()));
+            EXPECT_EQ((xio::ssize_t)text.size(), c.send(text.data(), text.size()));
 
             std::string response(text.size(), '\0');
             std::string reverse(text.rbegin(), text.rend());
 
-            EXPECT_EQ((chen::ssize_t)text.size(), c.recv(&response[0], text.size()));
+            EXPECT_EQ((xio::ssize_t)text.size(), c.recv(&response[0], text.size()));
             EXPECT_EQ(reverse, response);  // the server will inverts the string
         });
     }

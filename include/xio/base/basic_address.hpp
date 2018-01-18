@@ -6,9 +6,9 @@
  */
 #pragma once
 
-#include "socket/config.hpp"
+#include "xio/config.hpp"
 
-namespace chen
+namespace xio
 {
     /**
      * The base class for socket address

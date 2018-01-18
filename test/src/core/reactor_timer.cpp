@@ -4,11 +4,11 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/core/reactor.hpp"
+#include "xio/core/reactor.hpp"
 #include "gtest/gtest.h"
 
-using chen::reactor;
-using chen::ev_timer;
+using xio::reactor;
+using xio::ev_timer;
 
 TEST(CoreReactorTest, Timer)
 {

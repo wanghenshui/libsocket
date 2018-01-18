@@ -6,10 +6,10 @@
  */
 #pragma once
 
-#include "socket/ip/ip_version.hpp"
-#include "socket/config.hpp"
+#include "xio/ip/ip_version.hpp"
+#include "xio/config.hpp"
 
-namespace chen
+namespace xio
 {
     class ip_address
     {

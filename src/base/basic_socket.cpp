@@ -4,44 +4,44 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/base/basic_socket.hpp"
-#include "socket/core/reactor.hpp"
-#include "socket/core/ioctl.hpp"
+#include "xio/base/basic_socket.hpp"
+#include "xio/core/reactor.hpp"
+#include "xio/core/ioctl.hpp"
 #include "chen/sys/sys.hpp"
 
 // -----------------------------------------------------------------------------
 // basic_socket
-const int chen::basic_socket::FlagOutOfBand  = MSG_OOB;
-const int chen::basic_socket::FlagPeek       = MSG_PEEK;
-const int chen::basic_socket::FlagDoNotRoute = MSG_DONTROUTE;
-const int chen::basic_socket::FlagWaitAll    = MSG_WAITALL;
+const int xio::basic_socket::FlagOutOfBand  = MSG_OOB;
+const int xio::basic_socket::FlagPeek       = MSG_PEEK;
+const int xio::basic_socket::FlagDoNotRoute = MSG_DONTROUTE;
+const int xio::basic_socket::FlagWaitAll    = MSG_WAITALL;
 
-chen::basic_socket::basic_socket(std::nullptr_t) noexcept
+xio::basic_socket::basic_socket(std::nullptr_t) noexcept
 {
 }
 
-chen::basic_socket::basic_socket(int family, int type, int protocol)
+xio::basic_socket::basic_socket(int family, int type, int protocol)
 {
     this->reset(family, type, protocol);
 }
 
-chen::basic_socket::basic_socket(handle_t fd) noexcept
+xio::basic_socket::basic_socket(handle_t fd) noexcept
 {
     this->reset(fd);
 }
 
-chen::basic_socket::basic_socket(handle_t fd, int family, int type, int protocol) noexcept
+xio::basic_socket::basic_socket(handle_t fd, int family, int type, int protocol) noexcept
 {
     this->reset(fd, family, type, protocol);
 }
 
-chen::basic_socket::~basic_socket() noexcept
+xio::basic_socket::~basic_socket() noexcept
 {
     this->shutdown();
 }
 
 // reset
-void chen::basic_socket::reset()
+void xio::basic_socket::reset()
 {
     if (!this->_family)
         throw std::runtime_error("socket: reset failed because family is unknown");
@@ -54,7 +54,7 @@ void chen::basic_socket::reset()
 #endif
 
     if (!this->valid())
-        throw std::system_error(sys::error(), "socket: failed to create socket");
+        throw std::system_error(chen::sys::error(), "socket: failed to create socket");
 
 #ifdef SO_NOSIGPIPE
     // this macro is defined on Unix to prevent SIGPIPE on this socket
@@ -62,7 +62,7 @@ void chen::basic_socket::reset()
 #endif
 }
 
-void chen::basic_socket::reset(int family, int type, int protocol)
+void xio::basic_socket::reset(int family, int type, int protocol)
 {
     this->_family   = family;
     this->_type     = type;
@@ -71,13 +71,13 @@ void chen::basic_socket::reset(int family, int type, int protocol)
     this->reset();
 }
 
-void chen::basic_socket::reset(handle_t fd) noexcept
+void xio::basic_socket::reset(handle_t fd) noexcept
 {
     this->reset(fd, 0, 0, 0);
     this->_type = basic_option::type(fd);
 }
 
-void chen::basic_socket::reset(handle_t fd, int family, int type, int protocol) noexcept
+void xio::basic_socket::reset(handle_t fd, int family, int type, int protocol) noexcept
 {
     this->change(fd);
 
@@ -92,34 +92,34 @@ void chen::basic_socket::reset(handle_t fd, int family, int type, int protocol) 
 }
 
 // connection
-std::error_code chen::basic_socket::connect(const basic_address &addr) noexcept
+std::error_code xio::basic_socket::connect(const basic_address &addr) noexcept
 {
     auto storage = addr.sockaddr();
-    return !::connect(this->native(), (::sockaddr*)&storage, addr.socklen()) ? std::error_code() : sys::error();
+    return !::connect(this->native(), (::sockaddr*)&storage, addr.socklen()) ? std::error_code() : chen::sys::error();
 }
 
-std::error_code chen::basic_socket::bind(const basic_address &addr) noexcept
+std::error_code xio::basic_socket::bind(const basic_address &addr) noexcept
 {
     auto storage = addr.sockaddr();
-    return !::bind(this->native(), (::sockaddr*)&storage, addr.socklen()) ? std::error_code() : sys::error();
+    return !::bind(this->native(), (::sockaddr*)&storage, addr.socklen()) ? std::error_code() : chen::sys::error();
 }
 
-std::error_code chen::basic_socket::listen(int backlog) noexcept
+std::error_code xio::basic_socket::listen(int backlog) noexcept
 {
-    return !::listen(this->native(), backlog) ? std::error_code() : sys::error();
+    return !::listen(this->native(), backlog) ? std::error_code() : chen::sys::error();
 }
 
-std::error_code chen::basic_socket::listen() noexcept
+std::error_code xio::basic_socket::listen() noexcept
 {
     return this->listen(SOMAXCONN);
 }
 
-std::error_code chen::basic_socket::accept(basic_socket &s) noexcept
+std::error_code xio::basic_socket::accept(basic_socket &s) noexcept
 {
     handle_t fd = invalid_handle;
 
     if ((fd = ::accept(this->native(), nullptr, nullptr)) == invalid_handle)
-        return sys::error();
+        return chen::sys::error();
 
     s.reset(fd);
     ioctl::cloexec(fd, true);
@@ -128,12 +128,12 @@ std::error_code chen::basic_socket::accept(basic_socket &s) noexcept
 }
 
 // transmission
-chen::ssize_t chen::basic_socket::recv(void *data, std::size_t size) noexcept
+xio::ssize_t xio::basic_socket::recv(void *data, std::size_t size) noexcept
 {
     return this->recv(data, size, 0);
 }
 
-chen::ssize_t chen::basic_socket::recv(void *data, std::size_t size, int flags) noexcept
+xio::ssize_t xio::basic_socket::recv(void *data, std::size_t size, int flags) noexcept
 {
 #ifdef MSG_NOSIGNAL
     // this macro is defined on Linux to prevent SIGPIPE on this socket
@@ -147,7 +147,7 @@ chen::ssize_t chen::basic_socket::recv(void *data, std::size_t size, int flags) 
 #endif
 }
 
-chen::ssize_t chen::basic_socket::recvfrom(void *data, std::size_t size) noexcept
+xio::ssize_t xio::basic_socket::recvfrom(void *data, std::size_t size) noexcept
 {
     int flags = 0;
 
@@ -163,12 +163,12 @@ chen::ssize_t chen::basic_socket::recvfrom(void *data, std::size_t size) noexcep
 #endif
 }
 
-chen::ssize_t chen::basic_socket::recvfrom(void *data, std::size_t size, basic_address &addr) noexcept
+xio::ssize_t xio::basic_socket::recvfrom(void *data, std::size_t size, basic_address &addr) noexcept
 {
     return this->recvfrom(data, size, addr, 0);
 }
 
-chen::ssize_t chen::basic_socket::recvfrom(void *data, std::size_t size, basic_address &addr, int flags) noexcept
+xio::ssize_t xio::basic_socket::recvfrom(void *data, std::size_t size, basic_address &addr, int flags) noexcept
 {
 #ifdef MSG_NOSIGNAL
     // this macro is defined on Linux to prevent SIGPIPE on this socket
@@ -190,12 +190,12 @@ chen::ssize_t chen::basic_socket::recvfrom(void *data, std::size_t size, basic_a
     return ret;
 }
 
-chen::ssize_t chen::basic_socket::send(const void *data, std::size_t size) noexcept
+xio::ssize_t xio::basic_socket::send(const void *data, std::size_t size) noexcept
 {
     return this->send(data, size, 0);
 }
 
-chen::ssize_t chen::basic_socket::send(const void *data, std::size_t size, int flags) noexcept
+xio::ssize_t xio::basic_socket::send(const void *data, std::size_t size, int flags) noexcept
 {
 #ifdef MSG_NOSIGNAL
     // this macro is defined on Linux to prevent SIGPIPE on this socket
@@ -209,12 +209,12 @@ chen::ssize_t chen::basic_socket::send(const void *data, std::size_t size, int f
 #endif
 }
 
-chen::ssize_t chen::basic_socket::sendto(const void *data, std::size_t size, const basic_address &addr) noexcept
+xio::ssize_t xio::basic_socket::sendto(const void *data, std::size_t size, const basic_address &addr) noexcept
 {
     return this->sendto(data, size, addr, 0);
 }
 
-chen::ssize_t chen::basic_socket::sendto(const void *data, std::size_t size, const basic_address &addr, int flags) noexcept
+xio::ssize_t xio::basic_socket::sendto(const void *data, std::size_t size, const basic_address &addr, int flags) noexcept
 {
 #ifdef MSG_NOSIGNAL
     // this macro is defined on Linux to prevent SIGPIPE on this socket
@@ -231,7 +231,7 @@ chen::ssize_t chen::basic_socket::sendto(const void *data, std::size_t size, con
 }
 
 // cleanup
-void chen::basic_socket::shutdown(Shutdown type) noexcept
+void xio::basic_socket::shutdown(Shutdown type) noexcept
 {
 #ifdef _WIN32
     #define SHUT_RD   SD_RECEIVE
@@ -255,79 +255,79 @@ void chen::basic_socket::shutdown(Shutdown type) noexcept
     }
 }
 
-void chen::basic_socket::close() noexcept
+void xio::basic_socket::close() noexcept
 {
     ev_handle::close();
 }
 
 // property
-std::error_code chen::basic_socket::peer(basic_address &addr) const noexcept
+std::error_code xio::basic_socket::peer(basic_address &addr) const noexcept
 {
     ::sockaddr_storage tmp{};
     socklen_t len = sizeof(tmp);
 
     if (::getpeername(this->native(), (::sockaddr*)&tmp, &len) < 0)
-        return sys::error();
+        return chen::sys::error();
 
     addr.sockaddr((::sockaddr*)&tmp);
     return {};
 }
 
-std::error_code chen::basic_socket::sock(basic_address &addr) const noexcept
+std::error_code xio::basic_socket::sock(basic_address &addr) const noexcept
 {
     ::sockaddr_storage tmp{};
     socklen_t len = sizeof(tmp);
 
     if (::getsockname(this->native(), (::sockaddr*)&tmp, &len) < 0)
-        return sys::error();
+        return chen::sys::error();
 
     addr.sockaddr((::sockaddr*)&tmp);
     return {};
 }
 
-std::error_code chen::basic_socket::nonblocking(bool enable) noexcept
+std::error_code xio::basic_socket::nonblocking(bool enable) noexcept
 {
     return ioctl::nonblocking(this->native(), enable);
 }
 
-bool chen::basic_socket::valid() const noexcept
+bool xio::basic_socket::valid() const noexcept
 {
     return this->native() != invalid_handle;
 }
 
-chen::basic_socket::operator bool() const noexcept
+xio::basic_socket::operator bool() const noexcept
 {
     return this->valid();
 }
 
-std::size_t chen::basic_socket::available() const noexcept
+std::size_t xio::basic_socket::available() const noexcept
 {
     return ioctl::available(this->native());
 }
 
-int chen::basic_socket::family() const noexcept
+int xio::basic_socket::family() const noexcept
 {
     return this->_family;
 }
 
-int chen::basic_socket::type() const noexcept
+int xio::basic_socket::type() const noexcept
 {
     return this->_type;
 }
 
-int chen::basic_socket::protocol() const noexcept
+int xio::basic_socket::protocol() const noexcept
 {
     return this->_protocol;
 }
 
 // notify
-void chen::basic_socket::attach(std::function<void (int type)> cb) noexcept
+void xio::basic_socket::attach(std::function<void (int type)> cb) noexcept
 {
     this->_notify = std::move(cb);
 }
 
 // event
-void chen::basic_socket::onEvent(int type)
+void xio::basic_socket::onEvent(int type)
 {
     auto loop = this->evLoop();
     auto func = this->_notify;

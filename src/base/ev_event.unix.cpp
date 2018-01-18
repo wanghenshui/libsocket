@@ -6,25 +6,25 @@
  */
 #if (defined(__unix__) || defined(__APPLE__)) && !defined(__linux__)
 
-#include "socket/base/ev_event.hpp"
-#include "socket/core/reactor.hpp"
-#include "socket/core/ioctl.hpp"
+#include "xio/base/ev_event.hpp"
+#include "xio/core/reactor.hpp"
+#include "xio/core/ioctl.hpp"
 #include "chen/sys/sys.hpp"
 
 // -----------------------------------------------------------------------------
 // ev_event
-chen::ev_event::ev_event(std::function<void ()> cb) : _notify(std::move(cb))
+xio::ev_event::ev_event(std::function<void ()> cb) : _notify(std::move(cb))
 {
     handle_t pp[2]{};
 
     if (::pipe(pp) < 0)
-        throw std::system_error(sys::error(), "event: failed to create pipe");
+        throw std::system_error(chen::sys::error(), "event: failed to create pipe");
 
     if (ioctl::nonblocking(pp[0], true) || ioctl::nonblocking(pp[1], true))
     {
         ::close(pp[0]);
         ::close(pp[1]);
-        throw std::system_error(sys::error(), "event: failed to create pipe");
+        throw std::system_error(chen::sys::error(), "event: failed to create pipe");
     }
 
     ioctl::cloexec(pp[0], true);
@@ -34,18 +34,18 @@ chen::ev_event::ev_event(std::function<void ()> cb) : _notify(std::move(cb))
     this->_write = pp[1];  // write
 }
 
-chen::ev_event::~ev_event()
+xio::ev_event::~ev_event()
 {
     ::close(this->_write);
 }
 
-void chen::ev_event::set()
+void xio::ev_event::set()
 {
     this->_signaled = true;
     ::write(this->_write, "\n", 1);
 }
 
-void chen::ev_event::reset()
+void xio::ev_event::reset()
 {
     char buf[512];
     while (::read(this->native(), buf, 512) >= 0)
@@ -55,13 +55,13 @@ void chen::ev_event::reset()
 }
 
 // notify
-void chen::ev_event::attach(std::function<void ()> cb)
+void xio::ev_event::attach(std::function<void ()> cb)
 {
     this->_notify = std::move(cb);
 }
 
 // event
-void chen::ev_event::onEvent(int type)
+void xio::ev_event::onEvent(int type)
 {
     auto loop = this->evLoop();
     auto func = this->_notify;

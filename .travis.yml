@@ -9,7 +9,7 @@ matrix:
         - cd build
         - cmake -DSOCKET_CODE_COVERAGE=ON ..
         - make
-        - test/libsocket_test
+        - test/libxio_test
         - bash <(curl -s https://codecov.io/bash)
 
     - os: osx
@@ -18,5 +18,5 @@ matrix:
         - mkdir build
         - cd build
         - cmake -G Xcode ..
-        - xcodebuild -target libsocket_test -project libsocket.xcodeproj -configuration Release
-        - test/Release/libsocket_test
+        - xcodebuild -target libxio_test -project libxio.xcodeproj -configuration Release
+        - test/Release/libxio_test

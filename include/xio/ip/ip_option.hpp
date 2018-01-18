@@ -6,9 +6,9 @@
  */
 #pragma once
 
-#include "socket/base/basic_option.hpp"
+#include "xio/base/basic_option.hpp"
 
-namespace chen
+namespace xio
 {
     // -------------------------------------------------------------------------
     // Base

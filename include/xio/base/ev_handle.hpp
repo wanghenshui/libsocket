@@ -6,10 +6,10 @@
  */
 #pragma once
 
-#include "socket/base/ev_base.hpp"
-#include "socket/config.hpp"
+#include "xio/base/ev_base.hpp"
+#include "xio/config.hpp"
 
-namespace chen
+namespace xio
 {
     /**
      * The base class that has a file descriptor

@@ -1,13 +1,13 @@
-# libsocket
+# libxio
 
-[![Build Status](https://img.shields.io/travis/chensoft/libsocket.svg?label=macOS)](https://travis-ci.org/chensoft/libsocket)
-[![Build Status](https://img.shields.io/travis/chensoft/libsocket.svg?label=Linux)](https://travis-ci.org/chensoft/libsocket)
-[![Build status](https://img.shields.io/appveyor/ci/chensoft/libsocket.svg?label=Windows)](https://ci.appveyor.com/project/chensoft/libsocket)
-[![Coverage Status](https://img.shields.io/codecov/c/github/chensoft/libsocket.svg)](https://codecov.io/gh/chensoft/libsocket)
-[![release](https://img.shields.io/github/release/chensoft/libsocket.svg)](https://github.com/chensoft/libsocket/releases/latest)
+[![Build Status](https://img.shields.io/travis/chensoft/libxio.svg?label=macOS)](https://travis-ci.org/chensoft/libxio)
+[![Build Status](https://img.shields.io/travis/chensoft/libxio.svg?label=Linux)](https://travis-ci.org/chensoft/libxio)
+[![Build status](https://img.shields.io/appveyor/ci/chensoft/libxio.svg?label=Windows)](https://ci.appveyor.com/project/chensoft/libxio)
+[![Coverage Status](https://img.shields.io/codecov/c/github/chensoft/libxio.svg)](https://codecov.io/gh/chensoft/libxio)
+[![release](https://img.shields.io/github/release/chensoft/libxio.svg)](https://github.com/chensoft/libxio/releases/latest)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE)
 
-libsocket is a C++ socket toolkit, it contains many useful classes for creating network software. It's cross-platform and released under the MIT License.
+libxio is a C++ socket toolkit, it contains many useful classes for creating network software. It's cross-platform and released under the MIT License.
 
 ## Platforms
 
@@ -19,7 +19,7 @@ libsocket is a C++ socket toolkit, it contains many useful classes for creating 
 
 ## License
 
-libsocket is released under the MIT License. See the LICENSE file for more information.
+libxio is released under the MIT License. See the LICENSE file for more information.
 
 ## Contact
 

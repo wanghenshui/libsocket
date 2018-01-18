@@ -6,12 +6,12 @@
  */
 #if defined(__unix__) || defined(__APPLE__)
 
-#include "socket/core/startup.hpp"
+#include "xio/core/startup.hpp"
 #include <csignal>
 
 // -----------------------------------------------------------------------------
 // startup
-chen::startup::startup()
+xio::startup::startup()
 {
     class helper
     {

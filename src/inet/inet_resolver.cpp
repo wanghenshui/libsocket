@@ -4,7 +4,7 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/inet/inet_resolver.hpp"
+#include "xio/inet/inet_resolver.hpp"
 #include "chen/base/num.hpp"
 #include <cstdlib>
 #include <cstring>
@@ -12,7 +12,7 @@
 
 // -----------------------------------------------------------------------------
 // resolver
-std::vector<chen::inet_address> chen::inet_resolver::resolve(const std::string &mixed, int family)
+std::vector<xio::inet_address> xio::inet_resolver::resolve(const std::string &mixed, int family)
 {
     auto split = inet_resolver::extract(mixed);
 
@@ -47,7 +47,7 @@ std::vector<chen::inet_address> chen::inet_resolver::resolve(const std::string &
 }
 
 // reverse
-std::pair<std::string, std::string> chen::inet_resolver::reverse(const inet_address &addr)
+std::pair<std::string, std::string> xio::inet_resolver::reverse(const inet_address &addr)
 {
     char host[NI_MAXHOST]{};
     char serv[NI_MAXSERV]{};
@@ -59,7 +59,7 @@ std::pair<std::string, std::string> chen::inet_resolver::reverse(const inet_addr
 }
 
 // service
-std::uint16_t chen::inet_resolver::service(const std::string &name, const std::string &protocol)
+std::uint16_t xio::inet_resolver::service(const std::string &name, const std::string &protocol)
 {
     if (name.empty())
         return 0;
@@ -72,27 +72,27 @@ std::uint16_t chen::inet_resolver::service(const std::string &name, const std::s
         // search tcp first, then udp
         auto ent = ::getservbyname(name.c_str(), "tcp");
         if (ent)
-            return num::swap(static_cast<std::uint16_t>(ent->s_port));
+            return chen::num::swap(static_cast<std::uint16_t>(ent->s_port));
 
         ent = ::getservbyname(name.c_str(), "udp");
-        return ent ? num::swap(static_cast<std::uint16_t>(ent->s_port)) : static_cast<std::uint16_t>(0);
+        return ent ? chen::num::swap(static_cast<std::uint16_t>(ent->s_port)) : static_cast<std::uint16_t>(0);
     }
     else
     {
         // search specific protocol
         auto ent = ::getservbyname(name.c_str(), protocol.c_str());
-        return ent ? num::swap(static_cast<std::uint16_t>(ent->s_port)) : static_cast<std::uint16_t>(0);
+        return ent ? chen::num::swap(static_cast<std::uint16_t>(ent->s_port)) : static_cast<std::uint16_t>(0);
     }
 }
 
-std::string chen::inet_resolver::service(std::uint16_t port, const std::string &protocol)
+std::string xio::inet_resolver::service(std::uint16_t port, const std::string &protocol)
 {
-    auto ent = ::getservbyport(num::swap(port), !protocol.empty() ? protocol.c_str() : nullptr);
+    auto ent = ::getservbyport(chen::num::swap(port), !protocol.empty() ? protocol.c_str() : nullptr);
     return ent ? ent->s_name : "";
 }
 
 // split
-std::pair<std::string, std::string> chen::inet_resolver::extract(const std::string &mixed)
+std::pair<std::string, std::string> xio::inet_resolver::extract(const std::string &mixed)
 {
     auto beg = mixed.data();
     auto len = mixed.size();

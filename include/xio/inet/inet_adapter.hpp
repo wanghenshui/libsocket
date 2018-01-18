@@ -6,10 +6,10 @@
  */
 #pragma once
 
-#include "socket/ip/ip_address.hpp"
+#include "xio/ip/ip_address.hpp"
 #include <map>
 
-namespace chen
+namespace xio
 {
     class inet_adapter
     {

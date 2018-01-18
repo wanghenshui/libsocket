@@ -4,14 +4,14 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/inet/inet_address.hpp"
+#include "xio/inet/inet_address.hpp"
 #include "chen/base/num.hpp"
 #include "gtest/gtest.h"
 
-using chen::ip_address;
-using chen::ip_version6;
-using chen::inet_address;
-using chen::basic_address;
+using xio::ip_address;
+using xio::ip_version6;
+using xio::inet_address;
+using xio::basic_address;
 
 TEST(InetAddressTest, General)
 {

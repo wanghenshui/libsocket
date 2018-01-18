@@ -4,17 +4,17 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/base/basic_socket.hpp"
-#include "socket/inet/inet_address.hpp"
+#include "xio/base/basic_socket.hpp"
+#include "xio/inet/inet_address.hpp"
 #include "chen/mt/semaphore.hpp"
 #include "chen/base/num.hpp"
 #include "gtest/gtest.h"
 #include <thread>
 
-using chen::basic_socket;
-using chen::inet_address;
-using chen::basic_address;
-using chen::invalid_handle;
+using xio::basic_socket;
+using xio::inet_address;
+using xio::basic_address;
+using xio::invalid_handle;
 
 TEST(BasicSocketTest, Empty)
 {
@@ -113,13 +113,13 @@ TEST(BasicSocketTest, TCP)
             std::string text("hello, " + chen::num::str(i));
 
             EXPECT_TRUE(!client.connect(addr));
-            EXPECT_EQ(static_cast<chen::ssize_t>(text.size()), client.send(text.data(), text.size()));
+            EXPECT_EQ(static_cast<xio::ssize_t>(text.size()), client.send(text.data(), text.size()));
 
             char buff[512]{};
             auto size = client.recv(buff, 511);
 
             EXPECT_EQ(text, buff);
-            EXPECT_EQ(static_cast<chen::ssize_t>(text.size()), size);
+            EXPECT_EQ(static_cast<xio::ssize_t>(text.size()), size);
 
             // the following code is just for demonstration purpose
             client.shutdown(basic_socket::Shutdown::Read);   // close read channel
@@ -188,13 +188,13 @@ TEST(BasicSocketTest, UDP)
             EXPECT_TRUE(!client.bind(inet_address("127.0.0.1:0")));
 
             std::string text("hello, " + chen::num::str(i));
-            EXPECT_EQ(static_cast<chen::ssize_t>(text.size()), client.sendto(text.data(), text.size(), addr));
+            EXPECT_EQ(static_cast<xio::ssize_t>(text.size()), client.sendto(text.data(), text.size(), addr));
 
             char buff[512]{};
             auto size = client.recvfrom(buff, 511);
 
             EXPECT_EQ(text, buff);
-            EXPECT_EQ(static_cast<chen::ssize_t>(text.size()), size);
+            EXPECT_EQ(static_cast<xio::ssize_t>(text.size()), size);
         }
 
         // stop it

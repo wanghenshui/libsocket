@@ -4,11 +4,11 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/inet/inet_resolver.hpp"
+#include "xio/inet/inet_resolver.hpp"
 #include "gtest/gtest.h"
 
-using chen::ip_address;
-using chen::inet_resolver;
+using xio::ip_address;
+using xio::inet_resolver;
 
 TEST(InetResolverTest, Domain)
 {

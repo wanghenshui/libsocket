@@ -6,8 +6,8 @@
  */
 #if defined(__unix__) || defined(__APPLE__)
 
-#include "socket/inet/inet_adapter.hpp"
-#include "socket/base/basic_socket.hpp"
+#include "xio/inet/inet_adapter.hpp"
+#include "xio/base/basic_socket.hpp"
 #include "chen/base/num.hpp"
 #include "chen/base/str.hpp"
 #include <functional>
@@ -54,11 +54,11 @@ namespace
         }
     }
 
-    std::unique_ptr<chen::ip_address> create(struct ::sockaddr *ptr)
+    std::unique_ptr<xio::ip_address> create(struct ::sockaddr *ptr)
     {
-        using chen::ip_address;
-        using chen::ip_version4;
-        using chen::ip_version6;
+        using xio::ip_address;
+        using xio::ip_version4;
+        using xio::ip_version6;
 
         if (!ptr)
             return nullptr;
@@ -87,7 +87,7 @@ namespace
             return;
 
         // mtu
-        chen::basic_socket tmp(AF_INET6, SOCK_DGRAM);
+        xio::basic_socket tmp(AF_INET6, SOCK_DGRAM);
 
         ::ifreq ifr{};
         ifr.ifr_addr.sa_family = AF_INET6;
@@ -118,10 +118,10 @@ namespace
         switch (ptr->sa_family)
         {
             case AF_INET:
-                return chen::ip_version4::toCIDR(chen::num::swap(((::sockaddr_in*)ptr)->sin_addr.s_addr));
+                return xio::ip_version4::toCIDR(chen::num::swap(((::sockaddr_in*)ptr)->sin_addr.s_addr));
 
             case AF_INET6:
-                return chen::ip_version6::toCIDR(((::sockaddr_in6*)ptr)->sin6_addr.s6_addr);
+                return xio::ip_version6::toCIDR(((::sockaddr_in6*)ptr)->sin6_addr.s6_addr);
 
             default:
                 return 0;
@@ -134,7 +134,7 @@ namespace
 // ifaddr
 
 // enumerate
-std::map<std::string, chen::inet_adapter> chen::inet_adapter::enumerate()
+std::map<std::string, xio::inet_adapter> xio::inet_adapter::enumerate()
 {
     std::map<std::string, inet_adapter> map;
 
@@ -168,7 +168,7 @@ std::map<std::string, chen::inet_adapter> chen::inet_adapter::enumerate()
 }
 
 // scope
-std::uint32_t chen::inet_adapter::scope(const std::uint8_t addr[16], const std::string &name)
+std::uint32_t xio::inet_adapter::scope(const std::uint8_t addr[16], const std::string &name)
 {
     // if name is integer
     bool digits = std::all_of(name.begin(), name.end(), [] (char ch) -> bool {
@@ -198,7 +198,7 @@ std::uint32_t chen::inet_adapter::scope(const std::uint8_t addr[16], const std::
     return id;
 }
 
-std::string chen::inet_adapter::scope(std::uint32_t id)
+std::string xio::inet_adapter::scope(std::uint32_t id)
 {
     std::string name;
 
@@ -215,7 +215,7 @@ std::string chen::inet_adapter::scope(std::uint32_t id)
         }
     });
 
-    return !name.empty() ? name : num::str(id);
+    return !name.empty() ? name : chen::num::str(id);
 }
 
 #endif

@@ -4,213 +4,213 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/inet/inet_resolver.hpp"
+#include "xio/inet/inet_resolver.hpp"
 #include "chen/base/num.hpp"
 #include <cstring>
 
 // -----------------------------------------------------------------------------
 // address
-chen::inet_address::inet_address(std::nullptr_t)
+xio::inet_address::inet_address(std::nullptr_t)
 {
 }
 
-chen::inet_address::inet_address(const char *mixed) : inet_address(std::string(mixed))
+xio::inet_address::inet_address(const char *mixed) : inet_address(std::string(mixed))
 {
 }
 
-chen::inet_address::inet_address(const std::string &mixed)
+xio::inet_address::inet_address(const std::string &mixed)
 {
     this->assign(mixed);
 }
 
-chen::inet_address::inet_address(const ip_address &addr, std::uint16_t port) : _addr(addr), _port(port)
+xio::inet_address::inet_address(const ip_address &addr, std::uint16_t port) : _addr(addr), _port(port)
 {
 }
 
-chen::inet_address::inet_address(const ip_address &addr, const std::string &service) : _addr(addr), _port(inet_resolver::service(service))
+xio::inet_address::inet_address(const ip_address &addr, const std::string &service) : _addr(addr), _port(inet_resolver::service(service))
 {
 }
 
-chen::inet_address::inet_address(const struct ::sockaddr *addr)
+xio::inet_address::inet_address(const struct ::sockaddr *addr)
 {
     this->assign(addr);
 }
 
-chen::inet_address::inet_address(const struct ::sockaddr *addr, std::uint16_t port)
+xio::inet_address::inet_address(const struct ::sockaddr *addr, std::uint16_t port)
 {
     this->assign(addr, port);
 }
 
-chen::inet_address::inet_address(const struct ::sockaddr *addr, const std::string &service)
+xio::inet_address::inet_address(const struct ::sockaddr *addr, const std::string &service)
 {
     this->assign(addr, service);
 }
 
 // property
-std::string chen::inet_address::str(bool cidr, bool scope) const
+std::string xio::inet_address::str(bool cidr, bool scope) const
 {
     switch (this->_addr.type())
     {
         case ip_address::Type::IPv4:
-            return this->_addr.v4().str(cidr) + ":" + num::str(this->_port);
+            return this->_addr.v4().str(cidr) + ":" + chen::num::str(this->_port);
 
         case ip_address::Type::IPv6:
-            return "[" + this->_addr.v6().str(cidr, scope) + "]:" + num::str(this->_port);
+            return "[" + this->_addr.v6().str(cidr, scope) + "]:" + chen::num::str(this->_port);
 
         default:
             return "";
     }
 }
 
-bool chen::inet_address::empty() const
+bool xio::inet_address::empty() const
 {
     return this->_addr.empty();
 }
 
-chen::inet_address::operator bool() const
+xio::inet_address::operator bool() const
 {
     return !this->empty();
 }
 
-const chen::ip_address& chen::inet_address::addr() const
+const xio::ip_address& xio::inet_address::addr() const
 {
     return this->_addr;
 }
 
-void chen::inet_address::addr(const ip_address &value)
+void xio::inet_address::addr(const ip_address &value)
 {
     this->_addr = value;
 }
 
-std::uint16_t chen::inet_address::port() const
+std::uint16_t xio::inet_address::port() const
 {
     return this->_port;
 }
 
-void chen::inet_address::port(std::uint16_t value)
+void xio::inet_address::port(std::uint16_t value)
 {
     this->_port = value;
 }
 
 // special
-bool chen::inet_address::isWellKnownPort() const
+bool xio::inet_address::isWellKnownPort() const
 {
     // from 0 through 1023
     return this->_port <= 1023;
 }
 
-bool chen::inet_address::isRegisteredPort() const
+bool xio::inet_address::isRegisteredPort() const
 {
     // from 1024 through 49151
     return (this->_port >= 1024) && (this->_port <= 49151);
 }
 
-bool chen::inet_address::isDynamicPort() const
+bool xio::inet_address::isDynamicPort() const
 {
     // from 49152 through 65535
     return this->_port >= 49152;
 }
 
 // assignment
-void chen::inet_address::assign(std::nullptr_t)
+void xio::inet_address::assign(std::nullptr_t)
 {
     this->_addr = nullptr;
     this->_port = 0;
 }
 
-void chen::inet_address::assign(const std::string &mixed)
+void xio::inet_address::assign(const std::string &mixed)
 {
     auto pair = inet_resolver::extract(mixed);
     this->_addr = pair.first;
     this->_port = inet_resolver::service(pair.second);
 }
 
-void chen::inet_address::assign(const ip_address &addr, std::uint16_t port)
+void xio::inet_address::assign(const ip_address &addr, std::uint16_t port)
 {
     this->_addr = addr;
     this->_port = port;
 }
 
-void chen::inet_address::assign(const ip_address &addr, const std::string &service)
+void xio::inet_address::assign(const ip_address &addr, const std::string &service)
 {
     this->_addr = addr;
     this->_port = inet_resolver::service(service);
 }
 
-void chen::inet_address::assign(const struct ::sockaddr *addr)
+void xio::inet_address::assign(const struct ::sockaddr *addr)
 {
     this->sockaddr(addr);
 }
 
-void chen::inet_address::assign(const struct ::sockaddr *addr, std::uint16_t port)
+void xio::inet_address::assign(const struct ::sockaddr *addr, std::uint16_t port)
 {
     this->assign(addr);
     this->_port = port;
 }
 
-void chen::inet_address::assign(const struct ::sockaddr *addr, const std::string &service)
+void xio::inet_address::assign(const struct ::sockaddr *addr, const std::string &service)
 {
     this->assign(addr);
     this->_port = inet_resolver::service(service);
 }
 
-chen::inet_address& chen::inet_address::operator=(std::nullptr_t)
+xio::inet_address& xio::inet_address::operator=(std::nullptr_t)
 {
     this->assign(nullptr);
     return *this;
 }
 
-chen::inet_address& chen::inet_address::operator=(const char *mixed)
+xio::inet_address& xio::inet_address::operator=(const char *mixed)
 {
     this->assign(mixed);
     return *this;
 }
 
-chen::inet_address& chen::inet_address::operator=(const std::string &mixed)
+xio::inet_address& xio::inet_address::operator=(const std::string &mixed)
 {
     this->assign(mixed);
     return *this;
 }
 
-chen::inet_address& chen::inet_address::operator=(const struct ::sockaddr *addr)
+xio::inet_address& xio::inet_address::operator=(const struct ::sockaddr *addr)
 {
     this->assign(addr);
     return *this;
 }
 
 // comparison
-bool chen::inet_address::operator==(const inet_address &o) const
+bool xio::inet_address::operator==(const inet_address &o) const
 {
     return (this->_addr == o._addr) && (this->_port == o._port);
 }
 
-bool chen::inet_address::operator!=(const inet_address &o) const
+bool xio::inet_address::operator!=(const inet_address &o) const
 {
     return !(*this == o);
 }
 
-bool chen::inet_address::operator<(const inet_address &o) const
+bool xio::inet_address::operator<(const inet_address &o) const
 {
     return (this->_addr == o._addr) ? this->_port < o._port : this->_addr < o._addr;
 }
 
-bool chen::inet_address::operator>(const inet_address &o) const
+bool xio::inet_address::operator>(const inet_address &o) const
 {
     return o < *this;
 }
 
-bool chen::inet_address::operator<=(const inet_address &o) const
+bool xio::inet_address::operator<=(const inet_address &o) const
 {
     return (this->_addr == o._addr) ? this->_port <= o._port : this->_addr <= o._addr;
 }
 
-bool chen::inet_address::operator>=(const inet_address &o) const
+bool xio::inet_address::operator>=(const inet_address &o) const
 {
     return o <= *this;
 }
 
 // override
-socklen_t chen::inet_address::socklen() const
+socklen_t xio::inet_address::socklen() const
 {
     switch (this->_addr.type())
     {
@@ -225,7 +225,7 @@ socklen_t chen::inet_address::socklen() const
     }
 }
 
-struct ::sockaddr_storage chen::inet_address::sockaddr() const
+struct ::sockaddr_storage xio::inet_address::sockaddr() const
 {
     ::sockaddr_storage ret{};
 
@@ -260,15 +260,15 @@ struct ::sockaddr_storage chen::inet_address::sockaddr() const
     return ret;
 }
 
-void chen::inet_address::sockaddr(const struct ::sockaddr *addr)
+void xio::inet_address::sockaddr(const struct ::sockaddr *addr)
 {
     switch (addr->sa_family)
     {
         case AF_INET:
         {
             auto in = (::sockaddr_in*)addr;
-            this->_addr = ip_version4(num::swap(in->sin_addr.s_addr));
-            this->_port = num::swap(in->sin_port);
+            this->_addr = ip_version4(chen::num::swap(in->sin_addr.s_addr));
+            this->_port = chen::num::swap(in->sin_port);
         }
             break;
 
@@ -276,7 +276,7 @@ void chen::inet_address::sockaddr(const struct ::sockaddr *addr)
         {
             auto in = (::sockaddr_in6*)addr;
             this->_addr = ip_version6(in->sin6_addr.s6_addr, 128, in->sin6_scope_id);
-            this->_port = num::swap(in->sin6_port);
+            this->_port = chen::num::swap(in->sin6_port);
         }
             break;
 

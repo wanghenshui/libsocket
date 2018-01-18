@@ -6,7 +6,7 @@
  */
 #ifdef _WIN32
 
-#include "socket/inet/inet_adapter.hpp"
+#include "xio/inet/inet_adapter.hpp"
 #include "chen/base/str.hpp"
 #include "chen/base/num.hpp"
 #include <Iphlpapi.h>
@@ -62,11 +62,11 @@ namespace
         }
     }
 
-    std::unique_ptr<chen::ip_address> create(struct ::sockaddr *ptr)
+    std::unique_ptr<xio::ip_address> create(struct ::sockaddr *ptr)
     {
-        using chen::ip_address;
-        using chen::ip_version4;
-        using chen::ip_version6;
+        using xio::ip_address;
+        using xio::ip_version4;
+        using xio::ip_version6;
 
         if (!ptr)
             return nullptr;
@@ -110,7 +110,7 @@ namespace
 // ifaddr
 
 // enumerate
-std::map<std::string, chen::inet_adapter> chen::inet_adapter::enumerate()
+std::map<std::string, xio::inet_adapter> xio::inet_adapter::enumerate()
 {
     std::map<std::string, inet_adapter> map;
 
@@ -147,13 +147,13 @@ std::map<std::string, chen::inet_adapter> chen::inet_adapter::enumerate()
 }
 
 // scope
-std::uint32_t chen::inet_adapter::scope(const std::uint8_t addr[16], const std::string &name)
+std::uint32_t xio::inet_adapter::scope(const std::uint8_t addr[16], const std::string &name)
 {
     // scope is always a number on Windows
     return static_cast<std::uint32_t>(std::atoi(name.c_str()));
 }
 
-std::string chen::inet_adapter::scope(std::uint32_t id)
+std::string xio::inet_adapter::scope(std::uint32_t id)
 {
     // scope is always a number on Windows
     return num::str(id);

@@ -4,66 +4,66 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/ip/ip_address.hpp"
+#include "xio/ip/ip_address.hpp"
 #include "chen/base/str.hpp"
 
 // -----------------------------------------------------------------------------
 // ip_address
-chen::ip_address::ip_address(std::nullptr_t) : _type(Type::None)
+xio::ip_address::ip_address(std::nullptr_t) : _type(Type::None)
 {
 }
 
-chen::ip_address::ip_address(Type type)
+xio::ip_address::ip_address(Type type)
 {
     this->assign(type);
 }
 
-chen::ip_address::ip_address(const ip_version4 &v4)
+xio::ip_address::ip_address(const ip_version4 &v4)
 {
     this->assign(v4);
 }
 
-chen::ip_address::ip_address(const ip_version6 &v6)
+xio::ip_address::ip_address(const ip_version6 &v6)
 {
     this->assign(v6);
 }
 
-chen::ip_address::ip_address(const char *addr) : ip_address(std::string(addr))
+xio::ip_address::ip_address(const char *addr) : ip_address(std::string(addr))
 {
 }
 
-chen::ip_address::ip_address(const std::string &addr)
+xio::ip_address::ip_address(const std::string &addr)
 {
     this->assign(addr);
 }
 
-chen::ip_address::ip_address(const std::string &addr, std::uint8_t cidr)
+xio::ip_address::ip_address(const std::string &addr, std::uint8_t cidr)
 {
     this->assign(addr, cidr);
 }
 
-chen::ip_address::ip_address(const std::string &addr, std::uint8_t cidr, std::uint32_t scope)
+xio::ip_address::ip_address(const std::string &addr, std::uint8_t cidr, std::uint32_t scope)
 {
     this->assign(addr, cidr, scope);
 }
 
-chen::ip_address::ip_address(const std::string &addr, const std::string &mask)
+xio::ip_address::ip_address(const std::string &addr, const std::string &mask)
 {
     this->assign(addr, mask);
 }
 
-chen::ip_address::ip_address(const std::string &addr, const std::string &mask, std::uint32_t scope)
+xio::ip_address::ip_address(const std::string &addr, const std::string &mask, std::uint32_t scope)
 {
     this->assign(addr, mask, scope);
 }
 
 // assignment
-void chen::ip_address::assign(std::nullptr_t)
+void xio::ip_address::assign(std::nullptr_t)
 {
     this->_type = Type::None;
 }
 
-void chen::ip_address::assign(Type type)
+void xio::ip_address::assign(Type type)
 {
     this->_type = type;
 
@@ -82,19 +82,19 @@ void chen::ip_address::assign(Type type)
     }
 }
 
-void chen::ip_address::assign(const ip_version4 &v4)
+void xio::ip_address::assign(const ip_version4 &v4)
 {
     this->_type    = Type::IPv4;
     this->_impl.v4 = v4;
 }
 
-void chen::ip_address::assign(const ip_version6 &v6)
+void xio::ip_address::assign(const ip_version6 &v6)
 {
     this->_type    = Type::IPv6;
     this->_impl.v6 = v6;
 }
 
-void chen::ip_address::assign(const std::string &addr)
+void xio::ip_address::assign(const std::string &addr)
 {
     switch (ip_address::detect(addr))
     {
@@ -113,7 +113,7 @@ void chen::ip_address::assign(const std::string &addr)
     }
 }
 
-void chen::ip_address::assign(const std::string &addr, std::uint8_t cidr)
+void xio::ip_address::assign(const std::string &addr, std::uint8_t cidr)
 {
     switch (ip_address::detect(addr))
     {
@@ -132,7 +132,7 @@ void chen::ip_address::assign(const std::string &addr, std::uint8_t cidr)
     }
 }
 
-void chen::ip_address::assign(const std::string &addr, std::uint8_t cidr, std::uint32_t scope)
+void xio::ip_address::assign(const std::string &addr, std::uint8_t cidr, std::uint32_t scope)
 {
     switch (ip_address::detect(addr))
     {
@@ -151,7 +151,7 @@ void chen::ip_address::assign(const std::string &addr, std::uint8_t cidr, std::u
     }
 }
 
-void chen::ip_address::assign(const std::string &addr, const std::string &mask)
+void xio::ip_address::assign(const std::string &addr, const std::string &mask)
 {
     switch (ip_address::detect(addr))
     {
@@ -170,7 +170,7 @@ void chen::ip_address::assign(const std::string &addr, const std::string &mask)
     }
 }
 
-void chen::ip_address::assign(const std::string &addr, const std::string &mask, std::uint32_t scope)
+void xio::ip_address::assign(const std::string &addr, const std::string &mask, std::uint32_t scope)
 {
     switch (ip_address::detect(addr))
     {
@@ -189,79 +189,79 @@ void chen::ip_address::assign(const std::string &addr, const std::string &mask, 
     }
 }
 
-chen::ip_address& chen::ip_address::operator=(std::nullptr_t)
+xio::ip_address& xio::ip_address::operator=(std::nullptr_t)
 {
     this->assign(nullptr);
     return *this;
 }
 
-chen::ip_address& chen::ip_address::operator=(Type type)
+xio::ip_address& xio::ip_address::operator=(Type type)
 {
     this->assign(type);
     return *this;
 }
 
-chen::ip_address& chen::ip_address::operator=(const ip_version4 &v4)
+xio::ip_address& xio::ip_address::operator=(const ip_version4 &v4)
 {
     this->assign(v4);
     return *this;
 }
 
-chen::ip_address& chen::ip_address::operator=(const ip_version6 &v6)
+xio::ip_address& xio::ip_address::operator=(const ip_version6 &v6)
 {
     this->assign(v6);
     return *this;
 }
 
-chen::ip_address& chen::ip_address::operator=(const char *addr)
+xio::ip_address& xio::ip_address::operator=(const char *addr)
 {
     return *this = std::string(addr);
 }
 
-chen::ip_address& chen::ip_address::operator=(const std::string &addr)
+xio::ip_address& xio::ip_address::operator=(const std::string &addr)
 {
     this->assign(addr);
     return *this;
 }
 
 // detect
-chen::ip_address::Type chen::ip_address::type() const
+xio::ip_address::Type xio::ip_address::type() const
 {
     return this->_type;
 }
 
-bool chen::ip_address::isIPv4() const
+bool xio::ip_address::isIPv4() const
 {
     return this->_type == Type::IPv4;
 }
 
-bool chen::ip_address::isIPv6() const
+bool xio::ip_address::isIPv6() const
 {
     return this->_type == Type::IPv6;
 }
 
-const chen::ip_version4& chen::ip_address::v4() const
+const xio::ip_version4& xio::ip_address::v4() const
 {
     return this->_impl.v4;
 }
 
-const chen::ip_version6& chen::ip_address::v6() const
+const xio::ip_version6& xio::ip_address::v6() const
 {
     return this->_impl.v6;
 }
 
-chen::ip_version4& chen::ip_address::v4()
+xio::ip_version4& xio::ip_address::v4()
 {
     return this->_impl.v4;
 }
 
-chen::ip_version6& chen::ip_address::v6()
+xio::ip_version6& xio::ip_address::v6()
 {
     return this->_impl.v6;
 }
 
 // representation
-std::string chen::ip_address::str(bool cidr, bool scope) const
+std::string xio::ip_address::str(bool cidr, bool scope) const
 {
     switch (this->_type)
     {
@@ -276,7 +276,7 @@ std::string chen::ip_address::str(bool cidr, bool scope) const
     }
 }
 
-std::vector<std::uint8_t> chen::ip_address::bytes() const
+std::vector<std::uint8_t> xio::ip_address::bytes() const
 {
     switch (this->_type)
     {
@@ -291,17 +291,17 @@ std::vector<std::uint8_t> chen::ip_address::bytes() const
     }
 }
 
-bool chen::ip_address::empty() const
+bool xio::ip_address::empty() const
 {
     return this->_type == Type::None;
 }
 
-chen::ip_address::operator bool() const
+xio::ip_address::operator bool() const
 {
     return !this->empty();
 }
 
-std::uint8_t chen::ip_address::cidr() const
+std::uint8_t xio::ip_address::cidr() const
 {
     switch (this->_type)
     {
@@ -316,7 +316,7 @@ std::uint8_t chen::ip_address::cidr() const
     }
 }
 
-void chen::ip_address::cidr(std::uint8_t value)
+void xio::ip_address::cidr(std::uint8_t value)
 {
     switch (this->_type)
     {
@@ -333,19 +333,19 @@ void chen::ip_address::cidr(std::uint8_t value)
     }
 }
 
-std::uint32_t chen::ip_address::scope() const
+std::uint32_t xio::ip_address::scope() const
 {
     return this->isIPv6() ? this->_impl.v6.scope() : 0;
 }
 
-void chen::ip_address::scope(std::uint32_t value)
+void xio::ip_address::scope(std::uint32_t value)
 {
     if (this->isIPv6())
         this->_impl.v6.scope(value);
 }
 
 // network
-chen::ip_address chen::ip_address::network() const
+xio::ip_address xio::ip_address::network() const
 {
     switch (this->_type)
     {
@@ -360,7 +360,7 @@ chen::ip_address chen::ip_address::network() const
     }
 }
 
-chen::ip_address chen::ip_address::minhost() const
+xio::ip_address xio::ip_address::minhost() const
 {
     switch (this->_type)
     {
@@ -375,7 +375,7 @@ chen::ip_address chen::ip_address::minhost() const
     }
 }
 
-chen::ip_address chen::ip_address::maxhost() const
+xio::ip_address xio::ip_address::maxhost() const
 {
     switch (this->_type)
     {
@@ -391,7 +391,7 @@ chen::ip_address chen::ip_address::maxhost() const
 }
 
 // special
-bool chen::ip_address::isUnspecified() const
+bool xio::ip_address::isUnspecified() const
 {
     switch (this->_type)
     {
@@ -406,7 +406,7 @@ bool chen::ip_address::isUnspecified() const
     }
 }
 
-bool chen::ip_address::isLoopback() const
+bool xio::ip_address::isLoopback() const
 {
     switch (this->_type)
     {
@@ -421,7 +421,7 @@ bool chen::ip_address::isLoopback() const
     }
 }
 
-bool chen::ip_address::isMulticast() const
+bool xio::ip_address::isMulticast() const
 {
     switch (this->_type)
     {
@@ -437,7 +437,7 @@ bool chen::ip_address::isMulticast() const
 }
 
 // operator
-bool chen::ip_address::operator==(const ip_address &o) const
+bool xio::ip_address::operator==(const ip_address &o) const
 {
     if (this->_type != o._type)
         return false;
@@ -455,12 +455,12 @@ bool chen::ip_address::operator==(const ip_address &o) const
     }
 }
 
-bool chen::ip_address::operator!=(const ip_address &o) const
+bool xio::ip_address::operator!=(const ip_address &o) const
 {
     return !(*this == o);
 }
 
-bool chen::ip_address::operator<(const ip_address &o) const
+bool xio::ip_address::operator<(const ip_address &o) const
 {
     if (this->_type != o._type)
         return false;
@@ -478,12 +478,12 @@ bool chen::ip_address::operator<(const ip_address &o) const
     }
 }
 
-bool chen::ip_address::operator>(const ip_address &o) const
+bool xio::ip_address::operator>(const ip_address &o) const
 {
     return o < *this;
 }
 
-bool chen::ip_address::operator<=(const ip_address &o) const
+bool xio::ip_address::operator<=(const ip_address &o) const
 {
     if (this->_type != o._type)
         return false;
@@ -501,13 +501,13 @@ bool chen::ip_address::operator<=(const ip_address &o) const
     }
 }
 
-bool chen::ip_address::operator>=(const ip_address &o) const
+bool xio::ip_address::operator>=(const ip_address &o) const
 {
     return o <= *this;
 }
 
 // common
-chen::ip_address chen::ip_address::any(Type type)
+xio::ip_address xio::ip_address::any(Type type)
 {
     ip_address ret(nullptr);
 
@@ -530,7 +530,7 @@ chen::ip_address chen::ip_address::any(Type type)
     return ret;
 }
 
-chen::ip_address chen::ip_address::loopback(Type type)
+xio::ip_address xio::ip_address::loopback(Type type)
 {
     ip_address ret(nullptr);
 
@@ -557,7 +557,7 @@ chen::ip_address chen::ip_address::loopback(Type type)
 }
 
 // helper
-chen::ip_address::Type chen::ip_address::detect(const std::string &addr)
+xio::ip_address::Type xio::ip_address::detect(const std::string &addr)
 {
-    return str::contain(addr, ":") ? Type::IPv6 : Type::IPv4;
+    return chen::str::contain(addr, ":") ? Type::IPv6 : Type::IPv4;
 }

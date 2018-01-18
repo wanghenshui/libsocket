@@ -6,8 +6,8 @@
  */
 #ifdef _WIN32
 
-#include "socket/core/startup.hpp"
-#include "socket/config.hpp"
+#include "xio/core/startup.hpp"
+#include "xio/config.hpp"
 #include "chen/sys/sys.hpp"
 
 // -----------------------------------------------------------------------------
@@ -17,7 +17,7 @@
 
 // -----------------------------------------------------------------------------
 // startup
-chen::startup::startup()
+xio::startup::startup()
 {
     class helper
     {
@@ -29,7 +29,7 @@ chen::startup::startup()
 
             auto ret = ::WSAStartup(version, &data);
             if (ret)
-                throw std::system_error(sys::error(ret), "startup: failed to start winsock");
+                throw std::system_error(chen::sys::error(ret), "startup: failed to start winsock");
 
             if (data.wVersion != version)
                 throw std::runtime_error("startup: request winsock version is incorrect");

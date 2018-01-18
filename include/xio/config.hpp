@@ -19,7 +19,7 @@
 #include <netdb.h>        // getaddrinfo
 #include <fcntl.h>        // non-blocking
 
-namespace chen
+namespace xio
 {
     typedef ::ssize_t  ssize_t;  // ssize_t type
     typedef int       handle_t;  // handle type
@@ -41,7 +41,7 @@ namespace chen
 #include <ws2tcpip.h>  // getaddrinfo
 #include <windows.h>
 
-namespace chen
+namespace xio
 {
     typedef SSIZE_T ssize_t;  // ssize_t type
     typedef SOCKET handle_t;  // handle type
@@ -118,4 +118,4 @@ inline int epoll_create1(int flags)
 
 
 // Global Initialization
-#include "socket/core/startup.hpp"
+#include "xio/core/startup.hpp"

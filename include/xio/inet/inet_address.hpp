@@ -6,10 +6,10 @@
  */
 #pragma once
 
-#include "socket/base/basic_address.hpp"
-#include "socket/ip/ip_address.hpp"
+#include "xio/base/basic_address.hpp"
+#include "xio/ip/ip_address.hpp"
 
-namespace chen
+namespace xio
 {
     class inet_address : public basic_address
     {

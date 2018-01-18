@@ -1,4 +1,4 @@
-# Unit test for libsocket
+# Unit test for libxio
 # Jian Chen <admin@chensoft.com>
 # http://chensoft.com
 # Licensed under MIT license
@@ -24,10 +24,10 @@ file(GLOB_RECURSE INC_TEST src/*.hpp)
 file(GLOB_RECURSE SRC_TEST src/*.cpp)
 
 # generate app
-add_executable(libsocket_test ${INC_TEST} ${SRC_TEST})
+add_executable(libxio_test ${INC_TEST} ${SRC_TEST})
 
 # link library
-target_link_libraries(libsocket_test libsocket gtest)
+target_link_libraries(libxio_test libxio gtest)
 
 # group files in the IDE(e.g: Xcode and Visual Studio)
 chen_group_files(${CMAKE_CURRENT_SOURCE_DIR} "${INC_TEST}")

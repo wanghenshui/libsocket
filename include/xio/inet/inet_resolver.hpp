@@ -6,9 +6,9 @@
  */
 #pragma once
 
-#include "socket/inet/inet_address.hpp"
+#include "xio/inet/inet_address.hpp"
 
-namespace chen
+namespace xio
 {
     class inet_resolver
     {

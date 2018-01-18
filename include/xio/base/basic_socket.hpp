@@ -6,12 +6,12 @@
  */
 #pragma once
 
-#include "socket/base/basic_address.hpp"
-#include "socket/base/ev_handle.hpp"
-#include "socket/ip/ip_option.hpp"
+#include "xio/base/basic_address.hpp"
+#include "xio/base/ev_handle.hpp"
+#include "xio/ip/ip_option.hpp"
 #include <functional>
 
-namespace chen
+namespace xio
 {
     /**
      * BSD socket wrapper, usually you don't need to use it directly, use

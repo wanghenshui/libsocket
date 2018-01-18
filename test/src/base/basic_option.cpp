@@ -4,12 +4,12 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/base/basic_socket.hpp"
+#include "xio/base/basic_socket.hpp"
 #include "gtest/gtest.h"
 
-using chen::basic_socket;
-using chen::basic_option;
-using chen::basic_address;
+using xio::basic_socket;
+using xio::basic_option;
+using xio::basic_address;
 
 TEST(BasicOptionTest, TCP)
 {

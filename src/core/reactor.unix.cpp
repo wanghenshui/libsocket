@@ -6,8 +6,8 @@
  */
 #if (defined(__unix__) || defined(__APPLE__)) && !defined(__linux__)
 
-#include "socket/core/reactor.hpp"
-#include "socket/core/ioctl.hpp"
+#include "xio/core/reactor.hpp"
+#include "xio/core/ioctl.hpp"
 #include "chen/sys/sys.hpp"
 
 // -----------------------------------------------------------------------------
@@ -17,22 +17,22 @@ namespace
     int kq_type(int filter, int flags)
     {
         if ((flags & EV_EOF) || (flags & EV_ERROR))
-            return chen::ev_base::Closed;
+            return xio::ev_base::Closed;
 
         switch (filter)
         {
             case EVFILT_READ:
-                return chen::ev_base::Readable;
+                return xio::ev_base::Readable;
 
             case EVFILT_WRITE:
-                return chen::ev_base::Writable;
+                return xio::ev_base::Writable;
 
             default:
                 throw std::runtime_error("reactor: unknown event detect");
         }
     }
 
-    int kq_alter(chen::handle_t kq, chen::handle_t fd, int filter, int flags, uint32_t fflags, intptr_t data, void *udata)
+    int kq_alter(xio::handle_t kq, xio::handle_t fd, int filter, int flags, uint32_t fflags, intptr_t data, void *udata)
     {
         struct ::kevent event{};
         EV_SET(&event, fd, filter, flags, fflags, data, udata);
@@ -43,14 +43,14 @@ namespace
 
 // -----------------------------------------------------------------------------
 // reactor
-const int chen::reactor::FlagEdge = EV_CLEAR;
-const int chen::reactor::FlagOnce = EV_ONESHOT;
+const int xio::reactor::FlagEdge = EV_CLEAR;
+const int xio::reactor::FlagOnce = EV_ONESHOT;
 
-chen::reactor::reactor(std::size_t count) : _cache(count)
+xio::reactor::reactor(std::size_t count) : _cache(count)
 {
     // create kqueue file descriptor
     if ((this->_backend = ::kqueue()) < 0)
-        throw std::system_error(sys::error(), "reactor: failed to create kqueue");
+        throw std::system_error(chen::sys::error(), "reactor: failed to create kqueue");
 
     ioctl::cloexec(this->_backend, true);
 
@@ -59,7 +59,7 @@ chen::reactor::reactor(std::size_t count) : _cache(count)
 }
 
 // modify
-void chen::reactor::set(ev_handle *ptr, int mode, int flag)
+void xio::reactor::set(ev_handle *ptr, int mode, int flag)
 {
     auto fd = ptr->native();
 
@@ -78,7 +78,7 @@ void chen::reactor::set(ev_handle *ptr, int mode, int flag)
     ptr->onAttach(this, mode, flag);
 }
 
-void chen::reactor::del(ev_handle *ptr)
+void xio::reactor::del(ev_handle *ptr)
 {
     auto fd = ptr->native();
 
@@ -98,7 +98,7 @@ void chen::reactor::del(ev_handle *ptr)
 }
 
 // phase
-std::error_code chen::reactor::gather(std::chrono::nanoseconds timeout)
+std::error_code xio::reactor::gather(std::chrono::nanoseconds timeout)
 {
     std::unique_ptr<::timespec> time;
 
@@ -120,7 +120,7 @@ std::error_code chen::reactor::gather(std::chrono::nanoseconds timeout)
         else if (errno == EINTR)
             return std::make_error_code(std::errc::interrupted);  // EINTR maybe triggered by debugger
         else
-            throw std::system_error(sys::error(), "reactor: failed to poll event");
+            throw std::system_error(chen::sys::error(), "reactor: failed to poll event");
     }
 
     // merge events, events on the same fd will be notified only once

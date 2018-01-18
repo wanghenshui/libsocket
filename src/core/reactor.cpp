@@ -4,14 +4,14 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/core/reactor.hpp"
+#include "xio/core/reactor.hpp"
 #include <algorithm>
 
 // -----------------------------------------------------------------------------
 // helper
 namespace
 {
-    inline bool compare(const chen::ev_timer *t1, const chen::ev_timer *t2)
+    inline bool compare(const xio::ev_timer *t1, const xio::ev_timer *t2)
     {
         // we need a min heap here, but std::make_heap make
         // a max heap by default, so we use the > operator
@@ -22,15 +22,15 @@ namespace
 
 // -----------------------------------------------------------------------------
 // reactor
-const int chen::reactor::ModeRead  = 1 << 0;
-const int chen::reactor::ModeWrite = 1 << 1;
-const int chen::reactor::ModeRW    = ModeRead | ModeWrite;
+const int xio::reactor::ModeRead  = 1 << 0;
+const int xio::reactor::ModeWrite = 1 << 1;
+const int xio::reactor::ModeRW    = ModeRead | ModeWrite;
 
-chen::reactor::reactor() : reactor(64)  // 64 is enough
+xio::reactor::reactor() : reactor(64)  // 64 is enough
 {
 }
 
-chen::reactor::~reactor()
+xio::reactor::~reactor()
 {
     // clear handles before destroy backend
 #ifdef _WIN32
@@ -51,7 +51,7 @@ chen::reactor::~reactor()
 }
 
 // modify
-void chen::reactor::set(ev_timer *ptr, std::chrono::steady_clock::time_point init)
+void xio::reactor::set(ev_timer *ptr, std::chrono::steady_clock::time_point init)
 {
     ptr->setup(init);
 
@@ -61,7 +61,7 @@ void chen::reactor::set(ev_timer *ptr, std::chrono::steady_clock::time_point ini
     ptr->onAttach(this, 0, 0);  // mode & flag are useless
 }
 
-void chen::reactor::del(ev_timer *ptr)
+void xio::reactor::del(ev_timer *ptr)
 {
     // naturally terminated timer should not call this method
     // this method is only used for early termination of the timer
@@ -77,19 +77,19 @@ void chen::reactor::del(ev_timer *ptr)
 }
 
 // run
-void chen::reactor::run()
+void xio::reactor::run()
 {
     // quit if no events to monitor or operation canceled
     for (std::error_code code; ((this->_handles.size() > 1) || !this->_timers.empty()) && (code != std::errc::operation_canceled); code = this->poll())
         ;
 }
 
-std::error_code chen::reactor::poll()
+std::error_code xio::reactor::poll()
 {
     return this->poll(std::chrono::nanoseconds::min());
 }
 
-std::error_code chen::reactor::poll(std::chrono::nanoseconds timeout)
+std::error_code xio::reactor::poll(std::chrono::nanoseconds timeout)
 {
     // update timer
     auto zero = std::chrono::nanoseconds::zero();
@@ -114,24 +114,24 @@ std::error_code chen::reactor::poll(std::chrono::nanoseconds timeout)
     return error;
 }
 
-void chen::reactor::post(ev_handle *ptr, int type)
+void xio::reactor::post(ev_handle *ptr, int type)
 {
     this->_queue.emplace(ptr, type);
 }
 
-void chen::reactor::post(ev_timer *ptr)
+void xio::reactor::post(ev_timer *ptr)
 {
     this->_queue.emplace(ptr, 0);
 }
 
-void chen::reactor::stop()
+void xio::reactor::stop()
 {
     // notify wakeup message
     this->_wakeup.set();
 }
 
 // phase
-std::chrono::nanoseconds chen::reactor::update()
+std::chrono::nanoseconds xio::reactor::update()
 {
     if (this->_timers.empty())
         return std::chrono::nanoseconds::min();
@@ -185,7 +185,7 @@ std::chrono::nanoseconds chen::reactor::update()
     return ret;
 }
 
-void chen::reactor::notify()
+void xio::reactor::notify()
 {
     while (!this->_queue.empty())
     {
@@ -196,7 +196,7 @@ void chen::reactor::notify()
     }
 }
 
-void chen::reactor::reorder(ev_timer *ptr)
+void xio::reactor::reorder(ev_timer *ptr)
 {
     ptr->setup(std::chrono::steady_clock::now());
     this->_sorted = false;

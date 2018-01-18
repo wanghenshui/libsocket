@@ -4,24 +4,24 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/base/ev_handle.hpp"
-#include "socket/core/reactor.hpp"
+#include "xio/base/ev_handle.hpp"
+#include "xio/core/reactor.hpp"
 
 // -----------------------------------------------------------------------------
 // ev_handle
-chen::ev_handle::~ev_handle()
+xio::ev_handle::~ev_handle()
 {
     this->close();
 }
 
 // control
-void chen::ev_handle::change(handle_t fd)
+void xio::ev_handle::change(handle_t fd)
 {
     this->close();
     this->_fd = fd;
 }
 
-void chen::ev_handle::close()
+void xio::ev_handle::close()
 {
     if (this->_fd == invalid_handle)
         return;
@@ -34,7 +34,7 @@ void chen::ev_handle::close()
 #endif
 }
 
-chen::handle_t chen::ev_handle::transfer()
+xio::handle_t xio::ev_handle::transfer()
 {
     if (this->evLoop())
         this->evLoop()->del(this);
@@ -45,7 +45,7 @@ chen::handle_t chen::ev_handle::transfer()
 }
 
 // event
-void chen::ev_handle::onAttach(reactor *loop, int mode, int flag)
+void xio::ev_handle::onAttach(reactor *loop, int mode, int flag)
 {
     if (this->evLoop())
         this->evLoop()->del(this);

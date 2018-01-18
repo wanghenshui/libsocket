@@ -6,7 +6,7 @@
  */
 #ifdef _WIN32
 
-#include "socket/core/reactor.hpp"
+#include "xio/core/reactor.hpp"
 #include "chen/base/map.hpp"
 #include "chen/sys/sys.hpp"
 #include <algorithm>
@@ -20,17 +20,17 @@ namespace
         // check events, multiple events maybe occur
         if ((events & POLLERR) || (events & POLLHUP))
         {
-            return chen::ev_base::Closed;
+            return xio::ev_base::Closed;
         }
         else
         {
             int ret = 0;
 
             if (events & POLLIN)
-                ret |= chen::ev_base::Readable;
+                ret |= xio::ev_base::Readable;
 
             if (events & POLLOUT)
-                ret |= chen::ev_base::Writable;
+                ret |= xio::ev_base::Writable;
 
             return ret;
         }
@@ -40,17 +40,17 @@ namespace
 
 // -----------------------------------------------------------------------------
 // reactor
-const int chen::reactor::FlagEdge = 0;
-const int chen::reactor::FlagOnce = 1;
+const int xio::reactor::FlagEdge = 0;
+const int xio::reactor::FlagOnce = 1;
 
-chen::reactor::reactor(std::size_t count)  // count is ignored on Windows
+xio::reactor::reactor(std::size_t count)  // count is ignored on Windows
 {
     // create udp to recv wakeup message
     this->set(&this->_wakeup, ModeRead, 0);
 }
 
 // modify
-void chen::reactor::set(ev_handle *ptr, int mode, int flag)
+void xio::reactor::set(ev_handle *ptr, int mode, int flag)
 {
     auto fd = ptr->native();
 
@@ -78,7 +78,7 @@ void chen::reactor::set(ev_handle *ptr, int mode, int flag)
     ptr->onAttach(this, mode, flag);
 }
 
-void chen::reactor::del(ev_handle *ptr)
+void xio::reactor::del(ev_handle *ptr)
 {
     auto fd = ptr->native();
 
@@ -98,7 +98,7 @@ void chen::reactor::del(ev_handle *ptr)
 }
 
 // phase
-std::error_code chen::reactor::gather(std::chrono::nanoseconds timeout)
+std::error_code xio::reactor::gather(std::chrono::nanoseconds timeout)
 {
     // WSAPoll only support millisecond precision and always returned in advance, so we add a little time
     if (timeout > std::chrono::nanoseconds::zero())
@@ -110,7 +110,7 @@ std::error_code chen::reactor::gather(std::chrono::nanoseconds timeout)
     if (!result)
         return std::make_error_code(std::errc::timed_out);  // timeout if result is zero
     else if (result < 0)
-        throw std::system_error(sys::error(), "reactor: failed to poll event");
+        throw std::system_error(chen::sys::error(), "reactor: failed to poll event");
 
     // events on the same fd will be notified only once
     for (auto it = this->_cache.begin(); it != this->_cache.end(); ++it)

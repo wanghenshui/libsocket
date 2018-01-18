@@ -12,7 +12,7 @@ matrix:
 
 shallow_clone: true
 
-clone_folder: c:\projects\libsocket
+clone_folder: c:\projects\libxio
 
 before_build:
   - pwd
@@ -23,9 +23,9 @@ before_build:
   - cmake -G "Visual Studio 14 2015 Win64" ..
 
 build:
-  project: C:\projects\libsocket\build\libsocket.sln
+  project: C:\projects\libxio\build\libxio.sln
 
 test_script:
   - pwd
   - ls
-  - test\%configuration%\libsocket_test.exe
+  - test\%configuration%\libxio_test.exe

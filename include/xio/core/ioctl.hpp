@@ -6,11 +6,11 @@
  */
 #pragma once
 
-#include "socket/config.hpp"
+#include "xio/config.hpp"
 #include <system_error>
 #include <string>
 
-namespace chen
+namespace xio
 {
     class ioctl
     {

@@ -4,7 +4,7 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/inet/inet_adapter.hpp"
+#include "xio/inet/inet_adapter.hpp"
 #include "chen/base/num.hpp"
 #include "chen/base/str.hpp"
 #include <algorithm>
@@ -13,13 +13,13 @@
 
 // -----------------------------------------------------------------------------
 // ip_version
-std::uint8_t chen::ip_version::cidr() const
+std::uint8_t xio::ip_version::cidr() const
 {
     // @see rfc1519
     return this->_cidr;
 }
 
-void chen::ip_version::cidr(std::uint8_t value)
+void xio::ip_version::cidr(std::uint8_t value)
 {
     // @see rfc1519
     this->_cidr = value;
@@ -28,49 +28,49 @@ void chen::ip_version::cidr(std::uint8_t value)
 
 // -----------------------------------------------------------------------------
 // ip_version4
-chen::ip_version4::ip_version4(const std::string &addr)
+xio::ip_version4::ip_version4(const std::string &addr)
 {
     this->assign(addr);
 }
 
-chen::ip_version4::ip_version4(const std::string &addr, std::uint8_t cidr)
+xio::ip_version4::ip_version4(const std::string &addr, std::uint8_t cidr)
 {
     this->assign(addr, cidr);
 }
 
-chen::ip_version4::ip_version4(const std::string &addr, const std::string &mask)
+xio::ip_version4::ip_version4(const std::string &addr, const std::string &mask)
 {
     this->assign(addr, mask);
 }
 
-chen::ip_version4::ip_version4(std::uint32_t addr)
+xio::ip_version4::ip_version4(std::uint32_t addr)
 {
     this->assign(addr);
 }
 
-chen::ip_version4::ip_version4(std::uint32_t addr, std::uint8_t cidr)
+xio::ip_version4::ip_version4(std::uint32_t addr, std::uint8_t cidr)
 {
     this->assign(addr, cidr);
 }
 
-chen::ip_version4::ip_version4(std::uint32_t addr, const std::string &mask)
+xio::ip_version4::ip_version4(std::uint32_t addr, const std::string &mask)
 {
     this->assign(addr, mask);
 }
 
 // assignment
-void chen::ip_version4::assign()
+void xio::ip_version4::assign()
 {
     this->_addr = 0;
     this->_cidr = 32;
 }
 
-void chen::ip_version4::assign(const std::string &addr)
+void xio::ip_version4::assign(const std::string &addr)
 {
     this->_addr = ip_version4::toInteger(addr, &this->_cidr);
 }
 
-void chen::ip_version4::assign(const std::string &addr, std::uint8_t cidr)
+void xio::ip_version4::assign(const std::string &addr, std::uint8_t cidr)
 {
     this->_addr = ip_version4::toInteger(addr);
     this->_cidr = cidr;
@@ -79,19 +79,19 @@ void chen::ip_version4::assign(const std::string &addr, std::uint8_t cidr)
         throw std::runtime_error("ipv4: CIDR prefix must less than 32");
 }
 
-void chen::ip_version4::assign(const std::string &addr, const std::string &mask)
+void xio::ip_version4::assign(const std::string &addr, const std::string &mask)
 {
     this->_addr = ip_version4::toInteger(addr);
     this->_cidr = ip_version4::toCIDR(mask);
 }
 
-void chen::ip_version4::assign(std::uint32_t addr)
+void xio::ip_version4::assign(std::uint32_t addr)
 {
     this->_addr = addr;
     this->_cidr = 32;
 }
 
-void chen::ip_version4::assign(std::uint32_t addr, std::uint8_t cidr)
+void xio::ip_version4::assign(std::uint32_t addr, std::uint8_t cidr)
 {
     this->_addr = addr;
     this->_cidr = cidr;
@@ -100,31 +100,31 @@ void chen::ip_version4::assign(std::uint32_t addr, std::uint8_t cidr)
         throw std::runtime_error("ipv4: CIDR prefix must less than 32");
 }
 
-void chen::ip_version4::assign(std::uint32_t addr, const std::string &mask)
+void xio::ip_version4::assign(std::uint32_t addr, const std::string &mask)
 {
     this->_addr = addr;
     this->_cidr = ip_version4::toCIDR(mask);
 }
 
-chen::ip_version4& chen::ip_version4::operator=(const std::string &addr)
+xio::ip_version4& xio::ip_version4::operator=(const std::string &addr)
 {
     this->assign(addr);
     return *this;
 }
 
-chen::ip_version4& chen::ip_version4::operator=(std::uint32_t addr)
+xio::ip_version4& xio::ip_version4::operator=(std::uint32_t addr)
 {
     this->assign(addr);
     return *this;
 }
 
 // representation
-std::string chen::ip_version4::str(bool cidr) const
+std::string xio::ip_version4::str(bool cidr) const
 {
     return !cidr ? ip_version4::toString(this->_addr) : ip_version4::toString(this->_addr, this->_cidr);
 }
 
-std::vector<std::uint8_t> chen::ip_version4::bytes() const
+std::vector<std::uint8_t> xio::ip_version4::bytes() const
 {
     return std::vector<std::uint8_t>{
             static_cast<std::uint8_t>(this->_addr >> 24 & 0xff),
@@ -134,58 +134,58 @@ std::vector<std::uint8_t> chen::ip_version4::bytes() const
     };
 }
 
-std::uint32_t chen::ip_version4::addr() const
+std::uint32_t xio::ip_version4::addr() const
 {
     // @see rfc791
     return this->_addr;
 }
 
-void chen::ip_version4::addr(std::uint32_t value)
+void xio::ip_version4::addr(std::uint32_t value)
 {
     // @see rfc791
     this->_addr = value;
 }
 
 // network
-std::uint32_t chen::ip_version4::netmask() const
+std::uint32_t xio::ip_version4::netmask() const
 {
     // @see rfc1878
     return 0xffffffffu << (32 - this->_cidr);
 }
 
-std::uint32_t chen::ip_version4::wildcard() const
+std::uint32_t xio::ip_version4::wildcard() const
 {
     // @link https://en.wikipedia.org/wiki/Wildcard_mask
     return ~this->netmask();
 }
 
-chen::ip_version4 chen::ip_version4::network() const
+xio::ip_version4 xio::ip_version4::network() const
 {
     return ip_version4(this->_addr & this->netmask(), this->_cidr);
 }
 
-chen::ip_version4 chen::ip_version4::minhost() const
+xio::ip_version4 xio::ip_version4::minhost() const
 {
     return ip_version4((this->_addr & this->netmask()) | 0x00000001, this->_cidr);
 }
 
-chen::ip_version4 chen::ip_version4::maxhost() const
+xio::ip_version4 xio::ip_version4::maxhost() const
 {
     return ip_version4((this->_addr | this->wildcard()) & 0xfffffffe, this->_cidr);
 }
 
-chen::ip_version4 chen::ip_version4::broadcast() const
+xio::ip_version4 xio::ip_version4::broadcast() const
 {
     return ip_version4(this->_addr | this->wildcard(), this->_cidr);
 }
 
-std::size_t chen::ip_version4::hosts() const
+std::size_t xio::ip_version4::hosts() const
 {
     return this->maxhost().addr() - this->minhost().addr() + 1;
 }
 
 // special
-bool chen::ip_version4::isReserved() const
+bool xio::ip_version4::isReserved() const
 {
     // @link https://en.wikipedia.org/wiki/Reserved_IP_addresses
 
@@ -235,7 +235,7 @@ bool chen::ip_version4::isReserved() const
     return this->isPrivate();
 }
 
-bool chen::ip_version4::isPrivate() const
+bool xio::ip_version4::isPrivate() const
 {
     // 10.0.0.0/8
     // @see rfc1918, section 3
@@ -262,61 +262,61 @@ bool chen::ip_version4::isPrivate() const
     return (this->_addr & 0xfffe0000) == 0xc6120000;
 }
 
-bool chen::ip_version4::isLoopback() const
+bool xio::ip_version4::isLoopback() const
 {
     // 127.0.0.0/8
     // @see rfc990 & rfc6890, section 2.2.2
     return (this->_addr & 0xff000000) == 0x7f000000;
 }
 
-bool chen::ip_version4::isLinkLocal() const
+bool xio::ip_version4::isLinkLocal() const
 {
     // 169.254.0.0/16
     // @see rfc3927
     return (this->_addr & 0xffff0000) == 0xa9fe0000;
 }
 
-bool chen::ip_version4::isMulticast() const
+bool xio::ip_version4::isMulticast() const
 {
     return this->isClassD();
 }
 
-bool chen::ip_version4::isBroadcast() const
+bool xio::ip_version4::isBroadcast() const
 {
     // host bits are 1
     return (this->_addr | this->wildcard()) == this->_addr;
 }
 
 // classful
-bool chen::ip_version4::isClassA() const
+bool xio::ip_version4::isClassA() const
 {
     // leading: 0, network: 8, range: 0.0.0.0 ~ 127.255.255.255
     // @see rfc791, section 3.2
     return (this->_addr & 0x80000000) == 0;
 }
 
-bool chen::ip_version4::isClassB() const
+bool xio::ip_version4::isClassB() const
 {
     // leading: 10, network: 16, range: 128.0.0.0 ~ 191.255.255.255
     // @see rfc791, section 3.2
     return (this->_addr & 0xc0000000) == 0x80000000;
 }
 
-bool chen::ip_version4::isClassC() const
+bool xio::ip_version4::isClassC() const
 {
     // leading: 110, network: 24, range: 192.0.0.0 ~ 223.255.255.255
     // @see rfc791, section 3.2
     return (this->_addr & 0xe0000000) == 0xc0000000;
 }
 
-bool chen::ip_version4::isClassD() const
+bool xio::ip_version4::isClassD() const
 {
     // leading: 1110, range: 224.0.0.0 ~ 239.255.255.255
     // @see rfc1112, section 4
     return (this->_addr & 0xf0000000) == 0xe0000000;
 }
 
-bool chen::ip_version4::isClassE() const
+bool xio::ip_version4::isClassE() const
 {
     // leading: 1111, range: 240.0.0.0 ~ 255.255.255.255
     // @see rfc1112, section 4
@@ -324,57 +324,57 @@ bool chen::ip_version4::isClassE() const
 }
 
 // operator
-bool chen::ip_version4::operator==(const ip_version4 &o) const
+bool xio::ip_version4::operator==(const ip_version4 &o) const
 {
     return (this->_addr == o._addr) && (this->_cidr == o._cidr);
 }
 
-bool chen::ip_version4::operator!=(const ip_version4 &o) const
+bool xio::ip_version4::operator!=(const ip_version4 &o) const
 {
     return !(*this == o);
 }
 
-bool chen::ip_version4::operator<(const ip_version4 &o) const
+bool xio::ip_version4::operator<(const ip_version4 &o) const
 {
     return (this->_addr == o._addr) ? this->_cidr < o._cidr : this->_addr < o._addr;
 }
 
-bool chen::ip_version4::operator>(const ip_version4 &o) const
+bool xio::ip_version4::operator>(const ip_version4 &o) const
 {
     return o < *this;
 }
 
-bool chen::ip_version4::operator<=(const ip_version4 &o) const
+bool xio::ip_version4::operator<=(const ip_version4 &o) const
 {
     return (this->_addr == o._addr) ? this->_cidr <= o._cidr : this->_addr <= o._addr;
 }
 
-bool chen::ip_version4::operator>=(const ip_version4 &o) const
+bool xio::ip_version4::operator>=(const ip_version4 &o) const
 {
     return o <= *this;
 }
 
 // convert
-std::string chen::ip_version4::toString(std::uint32_t addr)
+std::string xio::ip_version4::toString(std::uint32_t addr)
 {
-    return str::format("%u.%u.%u.%u",
+    return chen::str::format("%u.%u.%u.%u",
                        addr >> 24 & 0xff,
                        addr >> 16 & 0xff,
                        addr >> 8 & 0xff,
                        addr & 0xff);
 }
 
-std::string chen::ip_version4::toString(std::uint32_t addr, std::uint8_t cidr)
+std::string xio::ip_version4::toString(std::uint32_t addr, std::uint8_t cidr)
 {
-    return ip_version4::toString(addr) + "/" + num::str(cidr);
+    return ip_version4::toString(addr) + "/" + chen::num::str(cidr);
 }
 
-std::uint32_t chen::ip_version4::toInteger(const std::string &addr)
+std::uint32_t xio::ip_version4::toInteger(const std::string &addr)
 {
     return ip_version4::toInteger(addr, nullptr);
 }
 
-std::uint32_t chen::ip_version4::toInteger(const std::string &addr, std::uint8_t *cidr)
+std::uint32_t xio::ip_version4::toInteger(const std::string &addr, std::uint8_t *cidr)
 {
     auto cur = addr.begin();
     auto end = addr.end();
@@ -453,83 +453,83 @@ std::uint32_t chen::ip_version4::toInteger(const std::string &addr, std::uint8_t
     return val;
 }
 
-std::uint8_t chen::ip_version4::toCIDR(const std::string &mask)
+std::uint8_t xio::ip_version4::toCIDR(const std::string &mask)
 {
     return ip_version4::toCIDR(ip_version4::toInteger(mask));
 }
 
-std::uint8_t chen::ip_version4::toCIDR(std::uint32_t mask)
+std::uint8_t xio::ip_version4::toCIDR(std::uint32_t mask)
 {
-    return static_cast<std::uint8_t>(num::bits(mask));
+    return static_cast<std::uint8_t>(chen::num::bits(mask));
 }
 
 
 // -----------------------------------------------------------------------------
 // ip_version6
-chen::ip_version6::ip_version6(const std::string &addr)
+xio::ip_version6::ip_version6(const std::string &addr)
 {
     this->assign(addr);
 }
 
-chen::ip_version6::ip_version6(const std::string &addr, std::uint8_t cidr)
+xio::ip_version6::ip_version6(const std::string &addr, std::uint8_t cidr)
 {
     this->assign(addr, cidr);
 }
 
-chen::ip_version6::ip_version6(const std::string &addr, std::uint8_t cidr, std::uint32_t scope)
+xio::ip_version6::ip_version6(const std::string &addr, std::uint8_t cidr, std::uint32_t scope)
 {
     this->assign(addr, cidr, scope);
 }
 
-chen::ip_version6::ip_version6(const std::string &addr, const std::string &mask)
+xio::ip_version6::ip_version6(const std::string &addr, const std::string &mask)
 {
     this->assign(addr, mask);
 }
 
-chen::ip_version6::ip_version6(const std::string &addr, const std::string &mask, std::uint32_t scope)
+xio::ip_version6::ip_version6(const std::string &addr, const std::string &mask, std::uint32_t scope)
 {
     this->assign(addr, mask, scope);
 }
 
-chen::ip_version6::ip_version6(const std::uint8_t addr[16])
+xio::ip_version6::ip_version6(const std::uint8_t addr[16])
 {
     this->assign(addr);
 }
 
-chen::ip_version6::ip_version6(const std::uint8_t addr[16], std::uint8_t cidr)
+xio::ip_version6::ip_version6(const std::uint8_t addr[16], std::uint8_t cidr)
 {
     this->assign(addr, cidr);
 }
 
-chen::ip_version6::ip_version6(const std::uint8_t addr[16], std::uint8_t cidr, std::uint32_t scope)
+xio::ip_version6::ip_version6(const std::uint8_t addr[16], std::uint8_t cidr, std::uint32_t scope)
 {
     this->assign(addr, cidr, scope);
 }
 
-chen::ip_version6::ip_version6(const std::uint8_t addr[16], const std::string &mask)
+xio::ip_version6::ip_version6(const std::uint8_t addr[16], const std::string &mask)
 {
     this->assign(addr, mask);
 }
 
-chen::ip_version6::ip_version6(const std::uint8_t addr[16], const std::string &mask, std::uint32_t scope)
+xio::ip_version6::ip_version6(const std::uint8_t addr[16], const std::string &mask, std::uint32_t scope)
 {
     this->assign(addr, mask, scope);
 }
 
 // assignment
-void chen::ip_version6::assign()
+void xio::ip_version6::assign()
 {
     this->_addr.fill(0);
     this->_cidr  = 128;
     this->_scope = 0;
 }
 
-void chen::ip_version6::assign(const std::string &addr)
+void xio::ip_version6::assign(const std::string &addr)
 {
     this->_addr = ip_version6::toBytes(addr, &this->_cidr, &this->_scope);
 }
 
-void chen::ip_version6::assign(const std::string &addr, std::uint8_t cidr)
+void xio::ip_version6::assign(const std::string &addr, std::uint8_t cidr)
 {
     this->_addr = ip_version6::toBytes(addr, nullptr, &this->_scope);
     this->_cidr = cidr;
@@ -538,7 +538,7 @@ void chen::ip_version6::assign(const std::string &addr, std::uint8_t cidr)
         throw std::runtime_error("ipv6: CIDR prefix must less than 128");
 }
 
-void chen::ip_version6::assign(const std::string &addr, std::uint8_t cidr, std::uint32_t scope)
+void xio::ip_version6::assign(const std::string &addr, std::uint8_t cidr, std::uint32_t scope)
 {
     this->_addr  = ip_version6::toBytes(addr);
     this->_cidr  = cidr;
@@ -548,30 +548,30 @@ void chen::ip_version6::assign(const std::string &addr, std::uint8_t cidr, std::
         throw std::runtime_error("ipv6: CIDR prefix must less than 128");
 }
 
-void chen::ip_version6::assign(const std::string &addr, const std::string &mask)
+void xio::ip_version6::assign(const std::string &addr, const std::string &mask)
 {
     this->_addr = ip_version6::toBytes(addr, nullptr, &this->_scope);
     this->_cidr = ip_version6::toCIDR(mask);
 }
 
-void chen::ip_version6::assign(const std::string &addr, const std::string &mask, std::uint32_t scope)
+void xio::ip_version6::assign(const std::string &addr, const std::string &mask, std::uint32_t scope)
 {
     this->_addr  = ip_version6::toBytes(addr);
     this->_cidr  = ip_version6::toCIDR(mask);
     this->_scope = scope;
 }
 
-void chen::ip_version6::assign(const std::uint8_t addr[16])
+void xio::ip_version6::assign(const std::uint8_t addr[16])
 {
     this->assign(addr, 128, 0);
 }
 
-void chen::ip_version6::assign(const std::uint8_t addr[16], std::uint8_t cidr)
+void xio::ip_version6::assign(const std::uint8_t addr[16], std::uint8_t cidr)
 {
     this->assign(addr, cidr, 0);
 }
 
-void chen::ip_version6::assign(const std::uint8_t addr[16], std::uint8_t cidr, std::uint32_t scope)
+void xio::ip_version6::assign(const std::uint8_t addr[16], std::uint8_t cidr, std::uint32_t scope)
 {
     ::memcpy(this->_addr.data(), addr, 16);
 
@@ -582,12 +582,12 @@ void chen::ip_version6::assign(const std::uint8_t addr[16], std::uint8_t cidr, s
         throw std::runtime_error("ipv6: CIDR prefix must less than 128");
 }
 
-void chen::ip_version6::assign(const std::uint8_t addr[16], const std::string &mask)
+void xio::ip_version6::assign(const std::uint8_t addr[16], const std::string &mask)
 {
     this->assign(addr, mask, 0);
 }
 
-void chen::ip_version6::assign(const std::uint8_t addr[16], const std::string &mask, std::uint32_t scope)
+void xio::ip_version6::assign(const std::uint8_t addr[16], const std::string &mask, std::uint32_t scope)
 {
     ::memcpy(this->_addr.data(), addr, 16);
 
@@ -595,25 +595,25 @@ void chen::ip_version6::assign(const std::uint8_t addr[16], const std::string &m
     this->_scope = scope;
 }
 
-chen::ip_version6& chen::ip_version6::operator=(const std::string &addr)
+xio::ip_version6& xio::ip_version6::operator=(const std::string &addr)
 {
     this->assign(addr);
     return *this;
 }
 
-chen::ip_version6& chen::ip_version6::operator=(const std::uint8_t addr[16])
+xio::ip_version6& xio::ip_version6::operator=(const std::uint8_t addr[16])
 {
     this->assign(addr);
     return *this;
 }
 
 // representation
-std::string chen::ip_version6::str(bool cidr) const
+std::string xio::ip_version6::str(bool cidr) const
 {
     return this->str(cidr, false);
 }
 
-std::string chen::ip_version6::str(bool cidr, bool scope) const
+std::string xio::ip_version6::str(bool cidr, bool scope) const
 {
     if (cidr && scope)
         return ip_version6::toScope(this->_addr.data(), this->_cidr, this->_scope);
@@ -625,32 +625,32 @@ std::string chen::ip_version6::str(bool cidr, bool scope) const
         return ip_version6::toString(this->_addr.data());
 }
 
-std::vector<std::uint8_t> chen::ip_version6::bytes() const
+std::vector<std::uint8_t> xio::ip_version6::bytes() const
 {
     return std::vector<std::uint8_t>(this->_addr.begin(), this->_addr.end());
 }
 
-std::string chen::ip_version6::expanded() const
+std::string xio::ip_version6::expanded() const
 {
     return ip_version6::toExpanded(this->_addr.data());
 }
 
-std::string chen::ip_version6::suppressed() const
+std::string xio::ip_version6::suppressed() const
 {
     return ip_version6::toSuppressed(this->_addr.data());
 }
 
-std::string chen::ip_version6::compressed() const
+std::string xio::ip_version6::compressed() const
 {
     return ip_version6::toCompressed(this->_addr.data());
 }
 
-std::string chen::ip_version6::mixed() const
+std::string xio::ip_version6::mixed() const
 {
     return ip_version6::toMixed(this->_addr.data());
 }
 
-chen::ip_version4 chen::ip_version6::embedded() const
+xio::ip_version4 xio::ip_version6::embedded() const
 {
     // IPv4-compatible & IPv4-mapped address, @see rfc4291, section 2.5.5
     // IPv4-embedded address, @see rfc6052, section 2.2
@@ -709,32 +709,32 @@ chen::ip_version4 chen::ip_version6::embedded() const
                        d);
 }
 
-const std::array<std::uint8_t, 16>& chen::ip_version6::addr() const
+const std::array<std::uint8_t, 16>& xio::ip_version6::addr() const
 {
     // @see rfc4291
     return this->_addr;
 }
 
-void chen::ip_version6::addr(const std::uint8_t value[16])
+void xio::ip_version6::addr(const std::uint8_t value[16])
 {
     // @see rfc4291
     ::memcpy(this->_addr.data(), value, 16);
 }
 
-std::uint32_t chen::ip_version6::scope() const
+std::uint32_t xio::ip_version6::scope() const
 {
     // @see rfc4007
     return this->_scope;
 }
 
-void chen::ip_version6::scope(std::uint32_t value)
+void xio::ip_version6::scope(std::uint32_t value)
 {
     // @see rfc4007
     this->_scope = value;
 }
 
 // network
-std::array<std::uint8_t, 16> chen::ip_version6::netmask() const
+std::array<std::uint8_t, 16> xio::ip_version6::netmask() const
 {
     std::array<std::uint8_t, 16> ret{};
 
@@ -752,7 +752,7 @@ std::array<std::uint8_t, 16> chen::ip_version6::netmask() const
     return ret;
 };
 
-std::array<std::uint8_t, 16> chen::ip_version6::wildcard() const
+std::array<std::uint8_t, 16> xio::ip_version6::wildcard() const
 {
     std::array<std::uint8_t, 16> ret{};
 
@@ -773,7 +773,7 @@ std::array<std::uint8_t, 16> chen::ip_version6::wildcard() const
     return ret;
 };
 
-chen::ip_version6 chen::ip_version6::network() const
+xio::ip_version6 xio::ip_version6::network() const
 {
     std::uint8_t tmp[16]{};
     std::array<std::uint8_t, 16> mask = this->netmask();
@@ -784,13 +784,13 @@ chen::ip_version6 chen::ip_version6::network() const
     return ip_version6(tmp, this->_cidr, this->_scope);
 }
 
-chen::ip_version6 chen::ip_version6::minhost() const
+xio::ip_version6 xio::ip_version6::minhost() const
 {
     // IPv6 host begins with 0
     return this->network();
 }
 
-chen::ip_version6 chen::ip_version6::maxhost() const
+xio::ip_version6 xio::ip_version6::maxhost() const
 {
     // IPv6 host ends with 1
     std::uint8_t tmp[16]{};
@@ -803,7 +803,7 @@ chen::ip_version6 chen::ip_version6::maxhost() const
 }
 
 // special
-bool chen::ip_version6::isUnspecified() const
+bool xio::ip_version6::isUnspecified() const
 {
     // all bits are zero
     // @see rfc4291, section 2.5.2
@@ -812,7 +812,7 @@ bool chen::ip_version6::isUnspecified() const
     });
 }
 
-bool chen::ip_version6::isLoopback() const
+bool xio::ip_version6::isLoopback() const
 {
     // 0:0:0:0:0:0:0:1
     // @see rfc4291, section 2.5.3
@@ -826,28 +826,28 @@ bool chen::ip_version6::isLoopback() const
     return this->_addr[15] == 1;
 }
 
-bool chen::ip_version6::isGlobalUnicast() const
+bool xio::ip_version6::isGlobalUnicast() const
 {
     // first 3 bits are 001
     // @see rfc3587, section 3
     return (this->_addr[0] & 0xe0) == 0x20;
 }
 
-bool chen::ip_version6::isLinkLocalUnicast() const
+bool xio::ip_version6::isLinkLocalUnicast() const
 {
     // first 10 bits are 1111111010
     // @see rfc4291, section 2.5.6
     return ((this->_addr[0] == 0xfe) && ((this->_addr[1] & 0xc0) == 0x80));
 }
 
-bool chen::ip_version6::isSiteLocalUnicast() const
+bool xio::ip_version6::isSiteLocalUnicast() const
 {
     // first 10 bits are 1111111011
     // @see rfc4291, section 2.5.7
     return ((this->_addr[0] == 0xfe) && ((this->_addr[1] & 0xc0) == 0xc0));
 }
 
-bool chen::ip_version6::isIPv4Compatible() const
+bool xio::ip_version6::isIPv4Compatible() const
 {
     // first 96 bits are zero
     // @see rfc4291, section 2.5.5.1
@@ -856,7 +856,7 @@ bool chen::ip_version6::isIPv4Compatible() const
     });
 }
 
-bool chen::ip_version6::isIPv4Mapped() const
+bool xio::ip_version6::isIPv4Mapped() const
 {
     // first 80 bits are zero, next 16 bits are one
     // @see rfc4291, section 2.5.5.2
@@ -870,7 +870,7 @@ bool chen::ip_version6::isIPv4Mapped() const
     return (this->_addr[10] == 0xff) && (this->_addr[11] == 0xff);
 }
 
-bool chen::ip_version6::isMulticast() const
+bool xio::ip_version6::isMulticast() const
 {
     // first 8 bits is 0xff
     // @see rfc4291, section 2.7
@@ -878,7 +878,7 @@ bool chen::ip_version6::isMulticast() const
 }
 
 // NAT64
-bool chen::ip_version6::isIPv4EmbeddedWellKnown() const
+bool xio::ip_version6::isIPv4EmbeddedWellKnown() const
 {
     // "64:ff9b::/96"
     // @see rfc6052, section 2.1
@@ -891,17 +891,17 @@ bool chen::ip_version6::isIPv4EmbeddedWellKnown() const
 }
 
 // operator
-bool chen::ip_version6::operator==(const ip_version6 &o) const
+bool xio::ip_version6::operator==(const ip_version6 &o) const
 {
     return (this->_addr == o._addr) && (this->_cidr == o._cidr) && (this->_scope == o._scope);
 }
 
-bool chen::ip_version6::operator!=(const ip_version6 &o) const
+bool xio::ip_version6::operator!=(const ip_version6 &o) const
 {
     return !(*this == o);
 }
 
-bool chen::ip_version6::operator<(const ip_version6 &o) const
+bool xio::ip_version6::operator<(const ip_version6 &o) const
 {
     if (this->_addr == o._addr)
         return this->_cidr == o._cidr ? this->_scope < o._scope : this->_cidr < o._cidr;
@@ -909,12 +909,12 @@ bool chen::ip_version6::operator<(const ip_version6 &o) const
         return this->_addr < o._addr;
 }
 
-bool chen::ip_version6::operator>(const ip_version6 &o) const
+bool xio::ip_version6::operator>(const ip_version6 &o) const
 {
     return o < *this;
 }
 
-bool chen::ip_version6::operator<=(const ip_version6 &o) const
+bool xio::ip_version6::operator<=(const ip_version6 &o) const
 {
     if (this->_addr == o._addr)
         return this->_cidr == o._cidr ? this->_scope <= o._scope : this->_cidr <= o._cidr;
@@ -922,35 +922,35 @@ bool chen::ip_version6::operator<=(const ip_version6 &o) const
         return this->_addr <= o._addr;
 }
 
-bool chen::ip_version6::operator>=(const ip_version6 &o) const
+bool xio::ip_version6::operator>=(const ip_version6 &o) const
 {
     return o <= *this;
 }
 
 // convert
-std::string chen::ip_version6::toString(const std::uint8_t addr[16])
+std::string xio::ip_version6::toString(const std::uint8_t addr[16])
 {
     return ip_version6::toCompressed(addr);
 }
 
-std::string chen::ip_version6::toString(const std::uint8_t addr[16], std::uint8_t cidr)
+std::string xio::ip_version6::toString(const std::uint8_t addr[16], std::uint8_t cidr)
 {
-    return ip_version6::toCompressed(addr) + "/" + num::str(cidr);
+    return ip_version6::toCompressed(addr) + "/" + chen::num::str(cidr);
 }
 
-std::string chen::ip_version6::toScope(const std::uint8_t addr[16], std::uint32_t scope)
+std::string xio::ip_version6::toScope(const std::uint8_t addr[16], std::uint32_t scope)
 {
     return ip_version6::toCompressed(addr) + "%" + inet_adapter::scope(scope);
 }
 
-std::string chen::ip_version6::toScope(const std::uint8_t addr[16], std::uint8_t cidr, std::uint32_t scope)
+std::string xio::ip_version6::toScope(const std::uint8_t addr[16], std::uint8_t cidr, std::uint32_t scope)
 {
-    return ip_version6::toCompressed(addr) + "%" + inet_adapter::scope(scope) + "/" + num::str(cidr);
+    return ip_version6::toCompressed(addr) + "%" + inet_adapter::scope(scope) + "/" + chen::num::str(cidr);
 }
 
-std::string chen::ip_version6::toExpanded(const std::uint8_t addr[16])
+std::string xio::ip_version6::toExpanded(const std::uint8_t addr[16])
 {
-    return str::format("%04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x",
+    return chen::str::format("%04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x",
                        (static_cast<unsigned>(addr[0]) << 8) + addr[1],
                        (static_cast<unsigned>(addr[2]) << 8) + addr[3],
                        (static_cast<unsigned>(addr[4]) << 8) + addr[5],
@@ -961,9 +961,9 @@ std::string chen::ip_version6::toExpanded(const std::uint8_t addr[16])
                        (static_cast<unsigned>(addr[14]) << 8) + addr[15]);
 }
 
-std::string chen::ip_version6::toSuppressed(const std::uint8_t addr[16])
+std::string xio::ip_version6::toSuppressed(const std::uint8_t addr[16])
 {
-    return str::format("%x:%x:%x:%x:%x:%x:%x:%x",
+    return chen::str::format("%x:%x:%x:%x:%x:%x:%x:%x",
                        (static_cast<unsigned>(addr[0]) << 8) + addr[1],
                        (static_cast<unsigned>(addr[2]) << 8) + addr[3],
                        (static_cast<unsigned>(addr[4]) << 8) + addr[5],
@@ -974,12 +974,12 @@ std::string chen::ip_version6::toSuppressed(const std::uint8_t addr[16])
                        (static_cast<unsigned>(addr[14]) << 8) + addr[15]);
 }
 
-std::string chen::ip_version6::toCompressed(const std::uint8_t addr[16])
+std::string xio::ip_version6::toCompressed(const std::uint8_t addr[16])
 {
     return ip_version6::compress(addr, addr + 16);
 }
 
-std::string chen::ip_version6::toMixed(const std::uint8_t addr[16])
+std::string xio::ip_version6::toMixed(const std::uint8_t addr[16])
 {
     // first 12 bytes
     auto ret = ip_version6::compress(addr, addr + 12);
@@ -990,23 +990,23 @@ std::string chen::ip_version6::toMixed(const std::uint8_t addr[16])
     for (auto it = beg, end = addr + 16; it != end; ++it)
     {
         ret += (it != beg) ? '.' : ':';
-        ret.append(num::str(*it));
+        ret.append(chen::num::str(*it));
     }
 
     return ret;
 }
 
-std::array<std::uint8_t, 16> chen::ip_version6::toBytes(const std::string &addr)
+std::array<std::uint8_t, 16> xio::ip_version6::toBytes(const std::string &addr)
 {
     return ip_version6::toBytes(addr, nullptr);
 };
 
-std::array<std::uint8_t, 16> chen::ip_version6::toBytes(const std::string &addr, std::uint8_t *cidr)
+std::array<std::uint8_t, 16> xio::ip_version6::toBytes(const std::string &addr, std::uint8_t *cidr)
 {
     return ip_version6::toBytes(addr, cidr, nullptr);
 };
 
-std::array<std::uint8_t, 16> chen::ip_version6::toBytes(const std::string &addr, std::uint8_t *cidr, std::uint32_t *scope)
+std::array<std::uint8_t, 16> xio::ip_version6::toBytes(const std::string &addr, std::uint8_t *cidr, std::uint32_t *scope)
 {
     std::array<std::uint8_t, 16> ret{};
 
@@ -1133,7 +1133,7 @@ std::array<std::uint8_t, 16> chen::ip_version6::toBytes(const std::string &addr,
 }
 
 // compress
-std::string chen::ip_version6::compress(const std::uint8_t *beg, const std::uint8_t *end)
+std::string xio::ip_version6::compress(const std::uint8_t *beg, const std::uint8_t *end)
 {
     std::string ret;
     int zero = 0;
@@ -1164,7 +1164,7 @@ std::string chen::ip_version6::compress(const std::uint8_t *beg, const std::uint
                 ret += ':';
 
             // append hexadecimal
-            ret.append(str::format("%x", (static_cast<unsigned>(a) << 8) + b));
+            ret.append(chen::str::format("%x", (static_cast<unsigned>(a) << 8) + b));
         }
         else
         {
@@ -1180,17 +1180,17 @@ std::string chen::ip_version6::compress(const std::uint8_t *beg, const std::uint
     return ret;
 }
 
-std::uint8_t chen::ip_version6::toCIDR(const std::string &mask)
+std::uint8_t xio::ip_version6::toCIDR(const std::string &mask)
 {
     return ip_version6::toCIDR(ip_version6::toBytes(mask).data());
 }
 
-std::uint8_t chen::ip_version6::toCIDR(const std::uint8_t mask[16])
+std::uint8_t xio::ip_version6::toCIDR(const std::uint8_t mask[16])
 {
     std::uint8_t cidr = 0;
 
     for (int i = 0; i < 16; ++i)
-        cidr += static_cast<std::uint8_t>(num::bits(mask[i]));
+        cidr += static_cast<std::uint8_t>(chen::num::bits(mask[i]));
 
     return cidr;
 }

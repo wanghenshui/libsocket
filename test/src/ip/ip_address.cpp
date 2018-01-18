@@ -4,13 +4,13 @@
  * @author Jian Chen <admin@chensoft.com>
  * @link   http://chensoft.com
  */
-#include "socket/inet/inet_adapter.hpp"
+#include "xio/inet/inet_adapter.hpp"
 #include "gtest/gtest.h"
 
-using chen::ip_address;
-using chen::ip_version4;
-using chen::ip_version6;
-using chen::inet_adapter;
+using xio::ip_address;
+using xio::ip_version4;
+using xio::ip_version6;
+using xio::inet_adapter;
 
 TEST(IPAddressTest, Base)
 {

@@ -1,4 +1,3 @@
 ignore:
   - "lib/"
   - "test/"
-  - "sample/"

@@ -54,18 +54,3 @@ install(
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/xio DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-
-# todo test libchen
-# code warnings
-#if(UNIX)
-#    target_compile_options(libxio PUBLIC -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers)
-#endif()
-
-# todo libchen option use PUBLIC, remove link libs
-# code coverage
-#option(XIO_CODE_COVERAGE "Enable libxio code coverage." OFF)
-#
-#if(XIO_CODE_COVERAGE)
-#    target_compile_options(libxio PRIVATE -g -O0 --coverage)  # debug, no optimization, enable coverage
-#    target_link_libraries(libxio gcov)
-#endif()

@@ -17,11 +17,17 @@ target_compile_definitions(
     XIO_VERSION="${libxio_VERSION}"
 )
 
-# todo use ExternalProject...
 # sublibraries
-find_package(libchen REQUIRED)
+if(NOT TARGET libchen)  # create it locally if not exist
+    if(NOT EXISTS ${PROJECT_SOURCE_DIR}/lib/libchen)
+        execute_process(
+            COMMAND git clone -b master https://github.com/chensoft/libchen.git
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/lib
+        )
+    endif()
+    add_subdirectory(${PROJECT_SOURCE_DIR}/lib/libchen lib/libchen)
+endif()
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/lib/libchen lib/libchen)
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/ifaddrs lib/ifaddrs)
 
 # include path

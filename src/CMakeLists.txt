@@ -31,7 +31,7 @@ endif()
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/ifaddrs lib/ifaddrs)
 
 # include path
-target_include_directories(libxio PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(libxio PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/lib/ifaddrs)
 
 # source codes
 file(GLOB_RECURSE XIO_INC ${PROJECT_SOURCE_DIR}/include/*.hpp)  # I hate to list all the files

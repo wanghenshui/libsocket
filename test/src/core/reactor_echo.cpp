@@ -1,0 +1,133 @@
+/**
+ * Created by Jian Chen
+ * @since  2016.12.29
+ * @author Jian Chen <admin@chensoft.com>
+ * @link   http://chensoft.com
+ */
+#include "xio/inet/inet_address.hpp"
+#include "xio/base/basic_socket.hpp"
+#include "xio/core/reactor.hpp"
+#include "chen/mt/threadpool.hpp"
+#include "catch.hpp"
+
+using xio::reactor;
+using xio::ev_base;
+using xio::inet_address;
+using xio::basic_socket;
+
+void server_thread(basic_socket &s);
+void client_thread(inet_address a);
+
+TEST_CASE("CoreReactorEchoTest")
+{
+    // server
+    basic_socket s(AF_INET, SOCK_STREAM);
+
+    CHECK(!s.bind(inet_address("127.0.0.1:0")));  // bind on a random port
+    CHECK(!s.listen());
+
+    std::thread t_server(std::bind(&server_thread, std::ref(s)));
+
+    // client
+    std::thread t_client(std::bind(&client_thread, s.sock<inet_address>()));
+
+    t_server.join();
+    t_client.join();
+}
+
+void server_thread(basic_socket &s)
+{
+    using namespace std::placeholders;
+
+    std::vector<std::unique_ptr<basic_socket>> cache;
+    reactor r;
+
+    auto handler_connection = [&](basic_socket *conn, int type) {
+        // you should read the rest of the data even if you received the closed event
+        CHECK(((type & ev_base::Readable) || (type & ev_base::Closed)));
+
+        // read data from client
+        auto size = conn->available();
+        CHECK(size >= 0u);
+
+        if (!size)
+            return;  // connection closed
+
+        std::string text(size, '\0');
+        CHECK((xio::ssize_t)size == conn->recv(&text[0], size));
+
+        // need stop the reactor?
+        if (text == "stop")
+            return r.stop();
+
+        // revert and send back
+        std::reverse(text.begin(), text.end());
+        CHECK((xio::ssize_t)size == conn->send(text.data(), size));
+    };
+
+    auto handler_server = [&](int type) {
+        CHECK((type & ev_base::Readable) > 0);
+
+        // accept new connection
+        std::unique_ptr<basic_socket> conn(new basic_socket);
+        CHECK(!s.accept(*conn));
+
+        conn->attach(std::bind(handler_connection, conn.get(), _1));
+
+        cache.emplace_back(std::move(conn));  // prevent connection released
+
+        // register event for conn
+        r.set(cache.back().get(), reactor::ModeRead, 0);
+    };
+
+    s.attach(handler_server);
+    r.set(&s, reactor::ModeRead, 0);
+
+    r.run();
+}
+
+void client_thread(inet_address a)
+{
+    // send each message to server, server
+    // will invert the string and send back
+    std::vector<std::string> data = {
+            "You say that you love rain",
+            "but you open your umbrella when it rains",
+            "You say that you love the sun",
+            "but you find a shadow spot when the sun shines",
+            "You say that you love the wind",
+            "But you close your windows when wind blows",
+            "This is why I am afraid",
+            "You say that you love me too",
+    };
+
+    // spawn many clients to exchange data with server
+    std::unique_ptr<chen::threadpool> pool(new chen::threadpool);
+
+    for (std::size_t i = 0, l = data.size(); i < l; ++i)
+    {
+        pool->post([&data, a, i] () {
+            auto text = data[i % data.size()];
+
+            basic_socket c(AF_INET, SOCK_STREAM);
+
+            CHECK(!c.connect(a));
+            CHECK((xio::ssize_t)text.size() == c.send(text.data(), text.size()));
+
+            std::string response(text.size(), '\0');
+            std::string reverse(text.rbegin(), text.rend());
+
+            CHECK((xio::ssize_t)text.size() == c.recv(&response[0], text.size()));
+            CHECK(reverse == response);  // the server will inverts the string
+        });
+    }
+
+    // destroy the thread pool
+    pool.reset();
+
+    // tell the server to quit
+    basic_socket c(AF_INET, SOCK_STREAM);
+
+    CHECK(!c.connect(a));
+    CHECK(4 == c.send("stop", 4));
+}

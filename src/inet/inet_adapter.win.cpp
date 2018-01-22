@@ -156,7 +156,7 @@ std::uint32_t xio::inet_adapter::scope(const std::uint8_t addr[16], const std::s
 std::string xio::inet_adapter::scope(std::uint32_t id)
 {
     // scope is always a number on Windows
-    return num::str(id);
+    return chen::num::str(id);
 }
 
 #endif

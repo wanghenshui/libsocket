@@ -9,6 +9,7 @@
 #include "chen/mt/semaphore.hpp"
 #include "chen/base/num.hpp"
 #include "catch.hpp"
+#include <cstring>
 #include <thread>
 
 using xio::basic_socket;
@@ -84,7 +85,7 @@ TEST_CASE("BasicSocketTest")
                 CHECK("127.0.0.1" == conn.peer<inet_address>().addr().str());
 
                 // retrieve available bytes to read
-                CHECK(conn.available() >= 0u);
+                CHECK_NOTHROW(conn.available());
 
                 // receive message
                 char buff[512]{};

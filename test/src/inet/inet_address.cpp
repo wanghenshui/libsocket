@@ -7,6 +7,7 @@
 #include "xio/inet/inet_address.hpp"
 #include "chen/base/num.hpp"
 #include "catch.hpp"
+#include <cstring>
 
 using xio::ip_address;
 using xio::ip_version6;

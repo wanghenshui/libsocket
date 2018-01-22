@@ -48,8 +48,6 @@ void server_thread(basic_socket &s)
 
         // read data from client
         auto size = conn->available();
-        CHECK(size >= 0u);
-
         if (!size)
             return;  // connection closed
 

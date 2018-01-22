@@ -6,6 +6,7 @@
  */
 #include "xio/inet/inet_adapter.hpp"
 #include "catch.hpp"
+#include <cstring>
 
 using xio::ip_address;
 using xio::ip_version4;

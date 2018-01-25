@@ -28,4 +28,4 @@ build:
 test_script:
   - pwd
   - ls
-  - test\%configuration%\libxio_test.exe
+  - test\%configuration%\libxio_test.exe -s

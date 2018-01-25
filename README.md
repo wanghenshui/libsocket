@@ -13,7 +13,7 @@ libxio is a C++ socket toolkit, it contains many useful classes for creating net
 * iOS (Xcode 8+)
 * Android (NDK r10e+)
 * macOS (Xcode 8+)
-* Linux (GCC 4.9+)
+* Linux (GCC 5+)
 * Windows (VS 2015+)
 
 ## License

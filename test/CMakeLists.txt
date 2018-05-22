@@ -4,7 +4,7 @@ add_executable(libxio-test "")
 set_target_properties(
     libxio-test PROPERTIES
     CXX_STANDARD 11
-    CXX_STANDARD_REQUIRED YES
+    CXX_STANDARD_REQUIRED ON
 )
 
 # include path

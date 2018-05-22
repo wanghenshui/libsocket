@@ -4,7 +4,7 @@ add_library(libxio "")
 set_target_properties(
     libxio PROPERTIES
     CXX_STANDARD 11
-    CXX_STANDARD_REQUIRED YES
+    CXX_STANDARD_REQUIRED ON
     VERSION ${libxio_VERSION}
     OUTPUT_NAME libxio PREFIX ""
 )
